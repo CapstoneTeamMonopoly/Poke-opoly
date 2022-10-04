@@ -21,11 +21,4 @@ public class PropertyTile : BasicTile
 
         // Action goes here
     }
-
-    public override void OnClicked()
-    {
-        // Action goes here
-
-        base.OnClicked();
-    }
 }
