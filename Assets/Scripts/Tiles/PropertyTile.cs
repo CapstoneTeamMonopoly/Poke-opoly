@@ -10,7 +10,6 @@ public class PropertyTile : BasicTile
     public override void Start()
     {
         base.Start();
-        CanSelect = true; // Temp
         // Action goes here
     }
 
@@ -18,7 +17,6 @@ public class PropertyTile : BasicTile
     public override void Update()
     {
         base.Update();
-
         // Action goes here
     }
 

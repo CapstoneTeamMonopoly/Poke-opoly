@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class BasicTile : TileObj
 {
     /*
-     *  BasicTile should handle all the standard visual elements of each tile (changing size when clicked on, hovered over, etc.
+     *  BasicTile should handle all the standard visual elements of each tile (changing size hovered over and selectable)
      */
 
     // CanSelect determines whether a tile is selectable as a button by the player
@@ -22,9 +22,8 @@ public class BasicTile : TileObj
     public override void Start()
     {
         isScaled = false;
-        actionableScale = new Vector3(0.75f, 0.75f, 0f);
-        hoverScale = new Vector3(0.3f, 0.3f, 0f);
-        Debug.Log("Tile Created");
+        actionableScale = new Vector3(0.75f, 0.75f, 0f); // TODO: adjust scaling values to look good
+        hoverScale = new Vector3(0.3f, 0.3f, 0f); // TODO: adjust scaling values to look good
     }
 
     // Update is called once per frame
@@ -34,25 +33,21 @@ public class BasicTile : TileObj
         {
             isScaled = true;
             this.transform.localScale += actionableScale;
-            Debug.Log("Actionable Scale");
         }
         if (!CanSelect && isScaled)
         {
             isScaled = false;
             this.transform.localScale -= actionableScale;
-            Debug.Log("Actionable Scale Back");
         }
     }
 
     private void OnMouseEnter()
     {
         this.transform.localScale += hoverScale;
-        Debug.Log("Mouse enter");
     }
 
     private void OnMouseExit()
     {
         this.transform.localScale -= hoverScale;
-        Debug.Log("Mouse exit");
     }
 }
