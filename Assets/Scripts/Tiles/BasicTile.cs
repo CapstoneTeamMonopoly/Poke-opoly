@@ -44,11 +44,6 @@ public class BasicTile : TileObj
         }
     }
 
-    private void OnMouseDown()
-    {
-        Debug.Log("Clicked");
-    }
-
     private void OnMouseEnter()
     {
         this.transform.localScale += hoverScale;
