@@ -12,6 +12,7 @@ public class BasicTile : TileObj
 
     // CanSelect determines whether a tile is selectable as a button by the player
     public bool CanSelect { get; set; }
+    public int tileIndex { get; set; }
 
     private bool isScaled;
 
