@@ -47,9 +47,6 @@ public class Board : MonoBehaviour
             int side = tileScript.index / (NUM_TILES / 4);
             int relIndex = tileScript.index % (NUM_TILES / 4);
 
-            float x = transform.position.x;
-            float y = transform.position.y;
-
             float xOffset = 0;
             float yOffset = 0;
 
@@ -80,7 +77,7 @@ public class Board : MonoBehaviour
             yOffset *= transform.localScale.y / 10;
 
             tile.transform.localScale = new Vector3(BOARD_WIDTH_P * transform.localScale.x / (tileRect.width * 10) * unitDisplayRatio, BOARD_HEIGHT_P * transform.localScale.y / (tileRect.height * 10) * unitDisplayRatio, 1f);
-            tile.transform.position = new Vector3(x + xOffset, y + yOffset, 0f);
+            tile.transform.position = new Vector3(transform.position.x + xOffset, transform.position.y + yOffset, 0f);
         }
     }
 
