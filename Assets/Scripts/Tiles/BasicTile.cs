@@ -12,6 +12,7 @@ public class BasicTile : TileObj
 
     // CanSelect determines whether a tile is selectable as a button by the player
     public bool CanSelect { get; set; }
+    public int index { get; set; }
 
     private bool isScaled;
 
@@ -43,11 +44,17 @@ public class BasicTile : TileObj
 
     private void OnMouseEnter()
     {
-        this.transform.localScale += hoverScale;
+        if (CanSelect)
+        {
+            this.transform.localScale += hoverScale;
+        }
     }
 
     private void OnMouseExit()
     {
-        this.transform.localScale -= hoverScale;
+        if (CanSelect)
+        {
+            this.transform.localScale -= hoverScale;
+        }
     }
 }
