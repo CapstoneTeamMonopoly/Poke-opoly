@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class PropertyTile : BasicTile
 {
-    public int Owner { get; set; }
+    public int Owner { get; set; } // Keeps track of the owner
+    //public string Color { get; set; } // The color of this tile
+    public int Purchase_Price { get; set; }  // Price to be paid when purchasing the tile.
+    public int Base_Landing_Price { get; set; }  // Price to be paid when landing on the tile.
+    public int Level { get; set; }  // Adjusts the base landing price
+    public int Full_Set { get; set; }  // Keeps track of whether 1 player owns all of this color
 
     // Start is called before the first frame update
     public override void Start()

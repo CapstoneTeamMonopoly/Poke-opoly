@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
 	//Possibly the ID's of the properties they own as quick reference,
 	//don't know if this is needed or will work so it can be taken out.
 	//Size 24 since that is how many properties there are that can be owned.
-	int properties[24];
+	//int[] properties = new int[24];
 
 	//Name of the player
 	private string Name;
