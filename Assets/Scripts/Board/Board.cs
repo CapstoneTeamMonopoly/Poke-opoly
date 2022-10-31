@@ -27,13 +27,33 @@ public class GameManager
         this.dice = dice;
     }
 
+	protected void Update()
+	{
+
+	}
+
+	// SetState does the action of the current state, moves to the next state, and sets up that state
     public void SetState(GameState toState)
     {
+		switch (state)
+		{
+			case GameState.RollDice:
+				MovePlayer();
+                break;
+            case GameState.PlayerAction:
+                break;
+            case GameState.DrawCard:
+                break;
+		}
         // TODO: Switch statement does the one time functionality when states are switched
         // e.g. SetState(GameState.RollDice) should tell the dice that they are ready to be clicked
         switch (toState)
         {
             case GameState.RollDice:
+				foreach (GameObject die in dice)
+				{
+					die.GetComponent<Dice>().actionable = true;
+				}
                 break;
             case GameState.PlayerAction:
                 break;
@@ -45,7 +65,15 @@ public class GameManager
 
     private void IncrementTurn()
     {
-        // TODO: increments turn by checking through the loop of players 1-4 and testing whether the player is still in-game
+		currPlayer += 1;
+		if (currPlayer >= 4)
+		{
+			currPlayer = 0;
+		}
+		if (players[currPlayer].GetComponent<Player>().bankrupt)
+		{
+			IncrementTurn();
+		}		
     }
 }
 

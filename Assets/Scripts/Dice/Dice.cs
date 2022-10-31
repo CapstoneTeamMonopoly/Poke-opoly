@@ -9,8 +9,15 @@ public class Dice : MonoBehaviour {
     // Reference to sprite renderer to change sprites
     private SpriteRenderer rend;
 
+	// If the game state currently allows the dice to be rolled they are actionable
+	public bool actionable { get; set; }
+
+	// Result of dice roll
+	private int result;
+
 	// Use this for initialization
 	private void Start () {
+		actionable = false;
 
         // Assign Renderer component
         rend = GetComponent<SpriteRenderer>();
@@ -22,7 +29,10 @@ public class Dice : MonoBehaviour {
     // If you left click over the dice then RollTheDice coroutine is started
     private void OnMouseDown()
     {
-        StartCoroutine("RollTheDice");
+		if (actionable)
+		{
+			GameManager
+		}
     }
 
     // Coroutine that rolls the dice
@@ -31,9 +41,6 @@ public class Dice : MonoBehaviour {
         // Variable to contain random dice side number.
         // It needs to be assigned. Let it be 0 initially
         int randomDiceSide = 0;
-
-        // Final side or value that dice reads in the end of coroutine
-        int finalSide = 0;
 
         // Loop to switch dice sides ramdomly
         // before final side appears. 20 itterations here.
@@ -51,7 +58,7 @@ public class Dice : MonoBehaviour {
 
         // Assigning final side so you can use this value later in your game
         // for player movement for example
-        finalSide = randomDiceSide + 1;
+        result = randomDiceSide + 1;
 
         // Show final dice value in Console
         Debug.Log(finalSide);
