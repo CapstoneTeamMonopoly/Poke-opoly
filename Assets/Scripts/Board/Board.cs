@@ -2,29 +2,100 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class GameManager
+{
+    private int currPlayer;
+
+    private List<GameObject> players;
+    private List<GameObject> tiles;
+    private List<GameObject> dice;
+    // Community chest and other deck should be here
+
+    public enum GameState
+    {
+        RollDice,
+        PlayerAction,
+        DrawCard,
+    }
+
+    private GameState state;
+
+    public GameManager(List<GameObject> players, List<GameObject> tiles, List<GameObject> dice)
+    {
+        this.players = players;
+        this.tiles = tiles;
+        this.dice = dice;
+    }
+
+    public void SetState(GameState toState)
+    {
+        // TODO: Switch statement does the one time functionality when states are switched
+        // e.g. SetState(GameState.RollDice) should tell the dice that they are ready to be clicked
+        switch (toState)
+        {
+            case GameState.RollDice:
+                break;
+            case GameState.PlayerAction:
+                break;
+            case GameState.DrawCard:
+                break;
+        }
+        state = toState;
+    }
+
+    private void IncrementTurn()
+    {
+        // TODO: increments turn by checking through the loop of players 1-4 and testing whether the player is still in-game
+    }
+}
+
 public class Board : MonoBehaviour
 {
+    public GameManager manager;
+
     private List<GameObject> tiles;
-
+    private List<GameObject> players;
+    private List<GameObject> dice;
     private const int NUM_TILES = 40;
-
-    private float BOARD_WIDTH_P;
-    private float BOARD_HEIGHT_P;
-
-    private Sprite sprite;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Create board tiles
         InstantiateTiles();
-        
         AutoplaceTiles();
+
+        // Create players
+        InstantiatePlayers();
+
+        // Create dice
+        InstantiateDice();
+
+        // Initiate game manager
+        manager = new GameManager(players, tiles, dice);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void InstantiateDice()
     {
-        
+        dice = new List<GameObject>();
+
+        GameObject dice1 = new GameObject("dice-0", typeof(SpriteRenderer), typeof(Dice));
+        GameObject dice2 = new GameObject("dice-1", typeof(SpriteRenderer), typeof(Dice));
+        dice.Add(dice1);
+        dice.Add(dice2);
+    }
+
+    private void InstantiatePlayers()
+    {
+        players = new List<GameObject>();
+
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject playerObj = new GameObject("player-" + i, typeof(SpriteRenderer), typeof(Player));
+            playerObj.GetComponent<Player>().id = i;
+            playerObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Money/1");
+            players.Add(playerObj);
+        }
     }
 
     private void InstantiateTiles()
@@ -354,10 +425,10 @@ public class Board : MonoBehaviour
 
     private void AutoplaceTiles()
     {
-        sprite = this.GetComponent<SpriteRenderer>().sprite;
+        Sprite sprite = this.GetComponent<SpriteRenderer>().sprite;
         Rect boardRect = sprite.textureRect;
-        BOARD_WIDTH_P = boardRect.width;
-        BOARD_HEIGHT_P = boardRect.height;
+        float boardWidthPx = boardRect.width;
+        float boardHeightPx = boardRect.height;
 
         /*
          *  This foreach loop places each tile around the board in the respective place for all tiles with indexes 0-35, starting at the bottom right and working clockwise
@@ -402,7 +473,7 @@ public class Board : MonoBehaviour
             xOffset *= transform.localScale.x / 11;
             yOffset *= transform.localScale.y / 11;
 
-            tile.transform.localScale = new Vector3(BOARD_WIDTH_P * transform.localScale.x / (tileRect.width * 11) * unitDisplayRatio, BOARD_HEIGHT_P * transform.localScale.y / (tileRect.height * 11) * unitDisplayRatio, 1f);
+            tile.transform.localScale = new Vector3(boardWidthPx * transform.localScale.x / (tileRect.width * 11) * unitDisplayRatio, boardHeightPx * transform.localScale.y / (tileRect.height * 11) * unitDisplayRatio, 1f);
             tile.transform.position = new Vector3(transform.position.x + xOffset, transform.position.y + yOffset, 0f);
         }
     }
