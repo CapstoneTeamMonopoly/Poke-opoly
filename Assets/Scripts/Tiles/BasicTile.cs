@@ -14,47 +14,22 @@ public class BasicTile : TileObj
     public bool CanSelect { get; set; }
     public int index { get; set; }
 
-    private bool isScaled;
-
-    private Vector3 actionableScale;
-    private Vector3 hoverScale;
-
     // Start is called before the first frame update
     public override void Start()
     {
-        isScaled = false;
-        actionableScale = new Vector3(0.75f, 0.75f, 0f); // TODO: adjust scaling values to look good
-        hoverScale = new Vector3(0.3f, 0.3f, 0f); // TODO: adjust scaling values to look good
     }
 
     // Update is called once per frame
     public override void Update()
     {
-        if (CanSelect && !isScaled)
-        {
-            isScaled = true;
-            this.transform.localScale += actionableScale;
-        }
-        if (!CanSelect && isScaled)
-        {
-            isScaled = false;
-            this.transform.localScale -= actionableScale;
-        }
+        
     }
 
-    private void OnMouseEnter()
+    private void OnMouseDown()
     {
         if (CanSelect)
         {
-            this.transform.localScale += hoverScale;
-        }
-    }
-
-    private void OnMouseExit()
-    {
-        if (CanSelect)
-        {
-            this.transform.localScale -= hoverScale;
+            GameManager.TileClicked(index);
         }
     }
 }

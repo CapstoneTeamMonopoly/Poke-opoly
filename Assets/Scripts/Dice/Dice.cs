@@ -9,31 +9,44 @@ public class Dice : MonoBehaviour {
     // Reference to sprite renderer to change sprites
     private SpriteRenderer rend;
 
-	// Use this for initialization
-	private void Start () {
+	// If the game state currently allows the dice to be rolled they are actionable
+	public bool actionable { get; set; }
 
+	// Result of dice roll
+	private int result;
+
+    public int GetResult()
+    {
+        return result;
+    }
+
+	// Use this for initialization
+	void Start ()
+    {
         // Assign Renderer component
         rend = GetComponent<SpriteRenderer>();
 
         // Load dice sides sprites to array from DiceSides subfolder of Resources folder
         diceSides = Resources.LoadAll<Sprite>("DiceSides/");
+
+        rend.sprite = diceSides[0];
 	}
 	
     // If you left click over the dice then RollTheDice coroutine is started
-    private void OnMouseDown()
+    void OnMouseDown()
     {
-        StartCoroutine("RollTheDice");
+        if (actionable)
+		{
+            GameManager.RollDice();
+		}
     }
 
     // Coroutine that rolls the dice
-    private IEnumerator RollTheDice()
+    public IEnumerator RollTheDice()
     {
         // Variable to contain random dice side number.
         // It needs to be assigned. Let it be 0 initially
         int randomDiceSide = 0;
-
-        // Final side or value that dice reads in the end of coroutine
-        int finalSide = 0;
 
         // Loop to switch dice sides ramdomly
         // before final side appears. 20 itterations here.
@@ -51,9 +64,24 @@ public class Dice : MonoBehaviour {
 
         // Assigning final side so you can use this value later in your game
         // for player movement for example
-        finalSide = randomDiceSide + 1;
+        result = randomDiceSide + 1;
+    }
+}
 
-        // Show final dice value in Console
-        Debug.Log(finalSide);
+public class RollEvent : Event
+{
+    private Dice dice1;
+    private Dice dice2;
+
+    public RollEvent(GameObject dice1, GameObject dice2)
+    {
+        this.dice1 = dice1.GetComponent<Dice>();
+        this.dice2 = dice2.GetComponent<Dice>();
+    }
+
+    public new IEnumerator RunEvent()
+    {
+        yield return dice1.RollTheDice();
+        yield return dice2.RollTheDice();
     }
 }
