@@ -24,4 +24,12 @@ public class BasicTile : TileObj
     {
         
     }
+
+    private void OnMouseDown()
+    {
+        if (CanSelect)
+        {
+            GameManager.TileClicked(index);
+        }
+    }
 }

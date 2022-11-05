@@ -6,10 +6,19 @@ public static class GameManager
 {
     private static int currPlayer;
 
+    private static GameObject board;
     private static List<GameObject> players;
     private static List<GameObject> tiles;
     private static List<GameObject> dice;
+
+    private static EventHandler handler;
     // Community chest and other deck should be here
+
+    static GameManager()
+    {
+        currPlayer = -1;
+        state = GameState.RollDice;
+    }
 
     public enum GameState
     {
@@ -20,28 +29,26 @@ public static class GameManager
 
     private static GameState state;
 
-    public static void InitGameObjects(List<GameObject> players, List<GameObject> tiles, List<GameObject> dice)
+    public static void InitGameObjects(GameObject board, ref List<GameObject> players, ref List<GameObject> tiles, ref List<GameObject> dice)
     {
         GameManager.players = players;
         GameManager.tiles = tiles;
         GameManager.dice = dice;
+        GameManager.board = board;
+        handler = board.AddComponent<EventHandler>();
+        ChangeState(state);
     }
-
-    // SetState does the action of the current state, moves to the next state, and sets up that state
-    public static void SetState(GameState toState)
+    
+    private static void ChangeState(GameState toState)
     {
-        switch (state)
-        {
-            case GameState.RollDice:
-                //MovePlayer();
-                break;
-            case GameState.PlayerAction:
-                break;
-            case GameState.DrawCard:
-                break;
+        foreach (GameObject tile in tiles) {
+            tile.GetComponent<BasicTile>().CanSelect = false;
         }
-        // TODO: Switch statement does the one time functionality when states are switched
-        // e.g. SetState(GameState.RollDice) should tell the dice that they are ready to be clicked
+        foreach (GameObject die in dice)
+        {
+            die.GetComponent<Dice>().actionable = false;
+        }
+
         switch (toState)
         {
             case GameState.RollDice:
@@ -49,6 +56,7 @@ public static class GameManager
                 {
                     die.GetComponent<Dice>().actionable = true;
                 }
+                IncrementTurn();
                 break;
             case GameState.PlayerAction:
                 break;
@@ -70,4 +78,26 @@ public static class GameManager
             IncrementTurn();
         }
     }
+
+    public static void RollDice()
+    {
+        board.GetComponent<Board>().StartCoroutine(handler.StartRollEvent(dice[0], dice[1]));
+    }
+
+    public static void MovePlayer(int dist)
+    {
+        Player player = players[currPlayer].GetComponent<Player>();
+        player.position += dist;
+        player.position %= 40;
+        player.MovePlayer(tiles[player.position]);
+    }
+
+    public static void TileClicked(int index)
+    {
+
+    }
+
+    /*
+     *  Coroutines
+     */
 }

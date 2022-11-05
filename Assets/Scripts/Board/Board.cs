@@ -23,15 +23,15 @@ public class Board : MonoBehaviour
         InstantiateDice();
 
         // Initiate game manager
-        GameManager.InitGameObjects(players, tiles, dice);
+        GameManager.InitGameObjects(gameObject, ref(players), ref(tiles), ref(dice));
     }
 
     private void InstantiateDice()
     {
         dice = new List<GameObject>();
 
-        GameObject dice1 = new GameObject("dice-0", typeof(SpriteRenderer), typeof(Dice));
-        GameObject dice2 = new GameObject("dice-1", typeof(SpriteRenderer), typeof(Dice));
+        GameObject dice1 = new GameObject("dice-0", typeof(BoxCollider), typeof(SpriteRenderer), typeof(Dice));
+        GameObject dice2 = new GameObject("dice-1", typeof(BoxCollider), typeof(SpriteRenderer), typeof(Dice));
         dice1.transform.position = new Vector3(9f, 2f, 0);
         dice2.transform.position = new Vector3(9f, -2f, 0);
         dice.Add(dice1);

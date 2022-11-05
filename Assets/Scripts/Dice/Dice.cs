@@ -15,10 +15,14 @@ public class Dice : MonoBehaviour {
 	// Result of dice roll
 	private int result;
 
-	// Use this for initialization
-	private void Start () {
-		actionable = false;
+    public int GetResult()
+    {
+        return result;
+    }
 
+	// Use this for initialization
+	void Start ()
+    {
         // Assign Renderer component
         rend = GetComponent<SpriteRenderer>();
 
@@ -29,15 +33,16 @@ public class Dice : MonoBehaviour {
 	}
 	
     // If you left click over the dice then RollTheDice coroutine is started
-    private void OnMouseDown()
+    void OnMouseDown()
     {
-		if (actionable)
+        if (actionable)
 		{
+            GameManager.RollDice();
 		}
     }
 
     // Coroutine that rolls the dice
-    private IEnumerator RollTheDice()
+    public IEnumerator RollTheDice()
     {
         // Variable to contain random dice side number.
         // It needs to be assigned. Let it be 0 initially
@@ -60,5 +65,23 @@ public class Dice : MonoBehaviour {
         // Assigning final side so you can use this value later in your game
         // for player movement for example
         result = randomDiceSide + 1;
+    }
+}
+
+public class RollEvent : Event
+{
+    private Dice dice1;
+    private Dice dice2;
+
+    public RollEvent(GameObject dice1, GameObject dice2)
+    {
+        this.dice1 = dice1.GetComponent<Dice>();
+        this.dice2 = dice2.GetComponent<Dice>();
+    }
+
+    public new IEnumerator RunEvent()
+    {
+        yield return dice1.RollTheDice();
+        yield return dice2.RollTheDice();
     }
 }
