@@ -2,85 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager
-{
-    private int currPlayer;
-
-    private List<GameObject> players;
-    private List<GameObject> tiles;
-    private List<GameObject> dice;
-    // Community chest and other deck should be here
-
-    public enum GameState
-    {
-        RollDice,
-        PlayerAction,
-        DrawCard,
-    }
-
-    private GameState state;
-
-    public GameManager(List<GameObject> players, List<GameObject> tiles, List<GameObject> dice)
-    {
-        this.players = players;
-        this.tiles = tiles;
-        this.dice = dice;
-    }
-
-	protected void Update()
-	{
-
-	}
-
-	// SetState does the action of the current state, moves to the next state, and sets up that state
-    public void SetState(GameState toState)
-    {
-		switch (state)
-		{
-			case GameState.RollDice:
-				MovePlayer();
-                break;
-            case GameState.PlayerAction:
-                break;
-            case GameState.DrawCard:
-                break;
-		}
-        // TODO: Switch statement does the one time functionality when states are switched
-        // e.g. SetState(GameState.RollDice) should tell the dice that they are ready to be clicked
-        switch (toState)
-        {
-            case GameState.RollDice:
-				foreach (GameObject die in dice)
-				{
-					die.GetComponent<Dice>().actionable = true;
-				}
-                break;
-            case GameState.PlayerAction:
-                break;
-            case GameState.DrawCard:
-                break;
-        }
-        state = toState;
-    }
-
-    private void IncrementTurn()
-    {
-		currPlayer += 1;
-		if (currPlayer >= 4)
-		{
-			currPlayer = 0;
-		}
-		if (players[currPlayer].GetComponent<Player>().bankrupt)
-		{
-			IncrementTurn();
-		}		
-    }
-}
-
 public class Board : MonoBehaviour
 {
-    public GameManager manager;
-
     private List<GameObject> tiles;
     private List<GameObject> players;
     private List<GameObject> dice;
@@ -100,7 +23,7 @@ public class Board : MonoBehaviour
         InstantiateDice();
 
         // Initiate game manager
-        manager = new GameManager(players, tiles, dice);
+        GameManager.InitGameObjects(players, tiles, dice);
     }
 
     private void InstantiateDice()
@@ -109,6 +32,8 @@ public class Board : MonoBehaviour
 
         GameObject dice1 = new GameObject("dice-0", typeof(SpriteRenderer), typeof(Dice));
         GameObject dice2 = new GameObject("dice-1", typeof(SpriteRenderer), typeof(Dice));
+        dice1.transform.position = new Vector3(9f, 2f, 0);
+        dice2.transform.position = new Vector3(9f, -2f, 0);
         dice.Add(dice1);
         dice.Add(dice2);
     }
@@ -121,7 +46,8 @@ public class Board : MonoBehaviour
         {
             GameObject playerObj = new GameObject("player-" + i, typeof(SpriteRenderer), typeof(Player));
             playerObj.GetComponent<Player>().id = i;
-            playerObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Money/1");
+            playerObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Board/player_{i}");
+            playerObj.GetComponent<Player>().MovePlayer(tiles[0]);
             players.Add(playerObj);
         }
     }

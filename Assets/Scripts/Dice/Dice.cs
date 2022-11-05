@@ -24,6 +24,8 @@ public class Dice : MonoBehaviour {
 
         // Load dice sides sprites to array from DiceSides subfolder of Resources folder
         diceSides = Resources.LoadAll<Sprite>("DiceSides/");
+
+        rend.sprite = diceSides[0];
 	}
 	
     // If you left click over the dice then RollTheDice coroutine is started
@@ -31,7 +33,6 @@ public class Dice : MonoBehaviour {
     {
 		if (actionable)
 		{
-			GameManager
 		}
     }
 
@@ -59,8 +60,5 @@ public class Dice : MonoBehaviour {
         // Assigning final side so you can use this value later in your game
         // for player movement for example
         result = randomDiceSide + 1;
-
-        // Show final dice value in Console
-        Debug.Log(finalSide);
     }
 }
