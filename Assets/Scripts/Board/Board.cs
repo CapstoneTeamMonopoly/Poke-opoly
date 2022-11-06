@@ -74,6 +74,7 @@ public class Board : MonoBehaviour
         tiles[1].GetComponent<BasicTile>().index = 1;
         tiles[1].GetComponent<PropertyTile>().PurchasePrice = 60;
         tiles[1].GetComponent<PropertyTile>().BaseLandingPrice = 2;
+        tiles[1].GetComponent<PropertyTile>().Type = "Brown";
 
 
         GameObject tileObj2 = new GameObject("tile-2", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
@@ -88,6 +89,7 @@ public class Board : MonoBehaviour
         tiles[3].GetComponent<BasicTile>().index = 3;
         tiles[3].GetComponent<PropertyTile>().PurchasePrice = 60;
         tiles[3].GetComponent<PropertyTile>().BaseLandingPrice = 4;
+        tiles[3].GetComponent<PropertyTile>().Type = "Brown";
 
 
         GameObject tileObj4 = new GameObject("tile-4", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
@@ -109,6 +111,7 @@ public class Board : MonoBehaviour
         tiles[6].GetComponent<BasicTile>().index = 6;
         tiles[6].GetComponent<PropertyTile>().PurchasePrice = 100;
         tiles[6].GetComponent<PropertyTile>().BaseLandingPrice = 6;
+        tiles[6].GetComponent<PropertyTile>().Type = "Cyan";
 
 
         GameObject tileObj7 = new GameObject("tile-7", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
@@ -123,6 +126,7 @@ public class Board : MonoBehaviour
         tiles[8].GetComponent<BasicTile>().index = 8;
         tiles[8].GetComponent<PropertyTile>().PurchasePrice = 100;
         tiles[8].GetComponent<PropertyTile>().BaseLandingPrice = 6;
+        tiles[8].GetComponent<PropertyTile>().Type = "Cyan";
 
 
         GameObject tileObj9 = new GameObject("tile-9", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -131,6 +135,7 @@ public class Board : MonoBehaviour
         tiles[9].GetComponent<BasicTile>().index = 9;
         tiles[9].GetComponent<PropertyTile>().PurchasePrice = 120;
         tiles[9].GetComponent<PropertyTile>().BaseLandingPrice = 8;
+        tiles[9].GetComponent<PropertyTile>().Type = "Cyan";
 
 
         // Next Corner!
@@ -146,6 +151,7 @@ public class Board : MonoBehaviour
         tiles[11].GetComponent<BasicTile>().index = 11;
         tiles[11].GetComponent<PropertyTile>().PurchasePrice = 140;
         tiles[11].GetComponent<PropertyTile>().BaseLandingPrice = 10;
+        tiles[11].GetComponent<PropertyTile>().Type = "Purple";
 
 
         GameObject tileObj12 = new GameObject("tile-12", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
@@ -160,6 +166,7 @@ public class Board : MonoBehaviour
         tiles[13].GetComponent<BasicTile>().index = 13;
         tiles[13].GetComponent<PropertyTile>().PurchasePrice = 140;
         tiles[13].GetComponent<PropertyTile>().BaseLandingPrice = 10;
+        tiles[13].GetComponent<PropertyTile>().Type = "Purple";
 
 
         GameObject tileObj14 = new GameObject("tile-14", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -168,6 +175,7 @@ public class Board : MonoBehaviour
         tiles[14].GetComponent<BasicTile>().index = 14;
         tiles[14].GetComponent<PropertyTile>().PurchasePrice = 160;
         tiles[14].GetComponent<PropertyTile>().BaseLandingPrice = 12;
+        tiles[14].GetComponent<PropertyTile>().Type = "Purple";
 
 
         GameObject tileObj15 = new GameObject("tile-15", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
@@ -182,6 +190,7 @@ public class Board : MonoBehaviour
         tiles[16].GetComponent<BasicTile>().index = 16;
         tiles[16].GetComponent<PropertyTile>().PurchasePrice = 180;
         tiles[16].GetComponent<PropertyTile>().BaseLandingPrice = 14;
+        tiles[16].GetComponent<PropertyTile>().Type = "Orange";
 
 
         GameObject tileObj17 = new GameObject("tile-17", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
@@ -196,6 +205,7 @@ public class Board : MonoBehaviour
         tiles[18].GetComponent<BasicTile>().index = 18;
         tiles[18].GetComponent<PropertyTile>().PurchasePrice = 180;
         tiles[18].GetComponent<PropertyTile>().BaseLandingPrice = 14;
+        tiles[18].GetComponent<PropertyTile>().Type = "Orange";
 
 
         GameObject tileObj19 = new GameObject("tile-19", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -204,6 +214,7 @@ public class Board : MonoBehaviour
         tiles[19].GetComponent<BasicTile>().index = 19;
         tiles[19].GetComponent<PropertyTile>().PurchasePrice = 200;
         tiles[19].GetComponent<PropertyTile>().BaseLandingPrice = 16;
+        tiles[19].GetComponent<PropertyTile>().Type = "Orange";
 
 
         // Next corner!
@@ -219,6 +230,7 @@ public class Board : MonoBehaviour
         tiles[21].GetComponent<BasicTile>().index = 21;
         tiles[21].GetComponent<PropertyTile>().PurchasePrice = 220;
         tiles[21].GetComponent<PropertyTile>().BaseLandingPrice = 18;
+        tiles[21].GetComponent<PropertyTile>().Type = "Red";
 
 
         GameObject tileObj22 = new GameObject("tile-22", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
@@ -233,6 +245,7 @@ public class Board : MonoBehaviour
         tiles[23].GetComponent<BasicTile>().index = 23;
         tiles[23].GetComponent<PropertyTile>().PurchasePrice = 220;
         tiles[23].GetComponent<PropertyTile>().BaseLandingPrice = 18;
+        tiles[23].GetComponent<PropertyTile>().Type = "Red";
 
 
         GameObject tileObj24 = new GameObject("tile-24", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -241,6 +254,7 @@ public class Board : MonoBehaviour
         tiles[24].GetComponent<BasicTile>().index = 24;
         tiles[24].GetComponent<PropertyTile>().PurchasePrice = 220;
         tiles[24].GetComponent<PropertyTile>().BaseLandingPrice = 18;
+        tiles[24].GetComponent<PropertyTile>().Type = "Red";
 
 
         GameObject tileObj25 = new GameObject("tile-25", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
@@ -255,6 +269,7 @@ public class Board : MonoBehaviour
         tiles[26].GetComponent<BasicTile>().index = 26;
         tiles[26].GetComponent<PropertyTile>().PurchasePrice = 240;
         tiles[26].GetComponent<PropertyTile>().BaseLandingPrice = 20;
+        tiles[26].GetComponent<PropertyTile>().Type = "Yellow";
 
 
         GameObject tileObj27 = new GameObject("tile-27", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -263,6 +278,7 @@ public class Board : MonoBehaviour
         tiles[27].GetComponent<BasicTile>().index = 27;
         tiles[27].GetComponent<PropertyTile>().PurchasePrice = 260;
         tiles[27].GetComponent<PropertyTile>().BaseLandingPrice = 22;
+        tiles[27].GetComponent<PropertyTile>().Type = "Yellow";
 
 
         GameObject tileObj28 = new GameObject("tile-28", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
@@ -277,6 +293,7 @@ public class Board : MonoBehaviour
         tiles[29].GetComponent<BasicTile>().index = 29;
         tiles[29].GetComponent<PropertyTile>().PurchasePrice = 280;
         tiles[29].GetComponent<PropertyTile>().BaseLandingPrice = 24;
+        tiles[29].GetComponent<PropertyTile>().Type = "Yellow";
 
 
         // Last Corner!
@@ -292,6 +309,7 @@ public class Board : MonoBehaviour
         tiles[31].GetComponent<BasicTile>().index = 31;
         tiles[31].GetComponent<PropertyTile>().PurchasePrice = 300;
         tiles[31].GetComponent<PropertyTile>().BaseLandingPrice = 26;
+        tiles[31].GetComponent<PropertyTile>().Type = "Green";
 
 
         GameObject tileObj32 = new GameObject("tile-32", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -300,6 +318,7 @@ public class Board : MonoBehaviour
         tiles[32].GetComponent<BasicTile>().index = 32;
         tiles[32].GetComponent<PropertyTile>().PurchasePrice = 300;
         tiles[32].GetComponent<PropertyTile>().BaseLandingPrice = 26;
+        tiles[32].GetComponent<PropertyTile>().Type = "Green";
 
 
         GameObject tileObj33 = new GameObject("tile-33", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
@@ -314,6 +333,7 @@ public class Board : MonoBehaviour
         tiles[34].GetComponent<BasicTile>().index = 34;
         tiles[34].GetComponent<PropertyTile>().PurchasePrice = 320;
         tiles[34].GetComponent<PropertyTile>().BaseLandingPrice = 28;
+        tiles[34].GetComponent<PropertyTile>().Type = "Green";
 
 
         GameObject tileObj35 = new GameObject("tile-35", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
@@ -334,6 +354,7 @@ public class Board : MonoBehaviour
         tiles[37].GetComponent<BasicTile>().index = 37;
         tiles[37].GetComponent<PropertyTile>().PurchasePrice = 350;
         tiles[37].GetComponent<PropertyTile>().BaseLandingPrice = 35;
+        tiles[37].GetComponent<PropertyTile>().Type = "Blue";
 
 
         GameObject tileObj38 = new GameObject("tile-38", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
@@ -349,6 +370,7 @@ public class Board : MonoBehaviour
         tiles[39].GetComponent<BasicTile>().index = 39;
         tiles[39].GetComponent<PropertyTile>().PurchasePrice = 400;
         tiles[39].GetComponent<PropertyTile>().BaseLandingPrice = 50;
+        tiles[39].GetComponent<PropertyTile>().Type = "Blue";
     }
 
     private void AutoplaceTiles()

@@ -60,7 +60,7 @@ public static class GameManager
                 PropertyTile boughtTile = tiles[index].GetComponent<PropertyTile>();
                 Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtTile.PurchasePrice}"); // TODO: Delete once hands implemented
 
-                boughtTile.Owner = currPlayer;
+                GivePlayerProperty(currPlayer, index);
                 if (boughtTile.Level == 0) boughtTile.Level = 1;
                 // TODO: See if the player should be charged when picking up tiles previously bought by other players (case: Level != 0, if they shouldnt be charged, add line to the if statement above)
                 players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice;
@@ -94,17 +94,15 @@ public static class GameManager
                 break;
             case GameState.PokemonCenter:
                 PropertyTile freeUpgradedTile = tiles[index].GetComponent<PropertyTile>();
-                Debug.Log($"Upgraded tile {index} for free. Property goes from level {freeUpgradedTile.Level} to player {freeUpgradedTile.Level + 1}"); // TODO: Delete once hands implemented
+                Debug.Log($"Upgraded tile {index} for free. Property goes from level {freeUpgradedTile.Level} to level {freeUpgradedTile.Level + 1}"); // TODO: Delete once hands implemented
 
                 freeUpgradedTile.Level += 1;
 
                 ChangeState(GameState.RollDice);
                 break;
             case GameState.TeamRocket:
-                PropertyTile stolenTile = tiles[index].GetComponent<PropertyTile>();
-                Debug.Log($"Stole tile {index}. Property goes from player {stolenTile.Owner} to player {currPlayer}"); // TODO: Delete once hands implemented
-
-                stolenTile.Owner = currPlayer;
+                Debug.Log($"Stole tile {index}. Property goes from player {tiles[index].GetComponent<PropertyTile>().Owner} to player {currPlayer}"); // TODO: Delete once hands implemented
+                GivePlayerProperty(currPlayer, index);
 
                 ChangeState(GameState.RollDice);
                 break;
@@ -281,6 +279,44 @@ public static class GameManager
      * PRIVATE HELPER FUNCTIONS
      */
 
+    // Handles giving a player property and removing/setting set bonuses
+    // Note: ALWAYS CALL THIS FUNCTION WHEN CHANGING PROPERTY OWNERSHIP
+    private static void GivePlayerProperty(int player, int propertyIndex)
+    {
+        PropertyTile property = tiles[propertyIndex].GetComponent<PropertyTile>();
+        Player newOwnerPlayer = players[currPlayer].GetComponent<Player>();
+
+        bool ownsFullSet = true;
+
+        List<PropertyTile> typeSet = new List<PropertyTile>();
+
+        property.Owner = player;
+
+        foreach (GameObject tile in tiles)
+        {
+            PropertyTile otherProperty = tile.GetComponent<PropertyTile>();
+            if (otherProperty != null) // If tile is actually a property
+            {
+                if (otherProperty.Type == property.Type)
+                {
+                    otherProperty.FullSet = false;
+                    typeSet.Add(otherProperty);
+                    if (otherProperty.Owner != player) ownsFullSet = false;
+                }
+            }
+        }
+
+        // If player doesn't own the full set, we don't set properties to FullSet
+        if (!ownsFullSet) return;
+
+        Debug.Log($"Player {player} owns full property set of type {property.Type}");
+
+        foreach (PropertyTile setTile in typeSet)
+        {
+            setTile.FullSet = true;
+        }
+    }
+
     private static void BankruptCurrentPlayer(int debtedPlayer)
     {
         Player bankruptPlayer = players[currPlayer].GetComponent<Player>();
@@ -293,7 +329,7 @@ public static class GameManager
             {
                 if (property.Owner == currPlayer)
                 {
-                    property.Owner = debtedPlayer;
+                    GivePlayerProperty(debtedPlayer, property.index);
                     Debug.Log($"Transfered property ${property.index} from player {currPlayer} to {debtedPlayer}");
                 }
             }
