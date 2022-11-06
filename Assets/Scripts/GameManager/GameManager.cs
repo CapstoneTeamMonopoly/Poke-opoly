@@ -29,8 +29,11 @@ public static class GameManager
     public enum GameState
     {
         RollDice,
+        PlayerAction,
+        DrawCard,
         BuyProperty,
         UpgradeProperty,
+        Railroad,
     }
 
     private static GameState state;
@@ -72,6 +75,10 @@ public static class GameManager
             case GameState.BuyProperty:
             case GameState.UpgradeProperty:
                 // Allow skip button to be selectable, fall through for all states that do this
+                // TODO: Create a skip button
+                break;
+            case GameState.Railroad:
+                // Allow skip button to be selectable
                 // TODO: Create a skip button
                 break;
         }
@@ -127,16 +134,39 @@ public static class GameManager
                 // Set property owner to current player, subtract player money, change state to roll dice
                 PropertyTile boughtTile = tiles[index].GetComponent<PropertyTile>();
                 Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtTile.PurchasePrice}"); // TODO: Delete once hands implemented
+
                 boughtTile.Owner = currPlayer;
                 boughtTile.Level += 1;
                 players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice;
+
                 ChangeState(GameState.RollDice);
                 break;
             case GameState.UpgradeProperty:
                 PropertyTile upgradedTile = tiles[index].GetComponent<PropertyTile>();
                 Debug.Log($"Upgraded tile {index}, level: {upgradedTile.Level + 1}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - upgradedTile.PurchasePrice}"); // TODO: Delete once hands implemented
+
                 upgradedTile.Level += 1;
                 players[currPlayer].GetComponent<Player>().money -= upgradedTile.PurchasePrice;
+
+                ChangeState(GameState.RollDice);
+                break;
+            case GameState.Railroad:
+                RailroadTile Destination = tiles[index].GetComponent<RailroadTile>();
+                Player player = players[currPlayer].GetComponent<Player>();
+
+                int start = players[currPlayer].GetComponent<Player>().position;
+
+                int price = index - start;
+                if (price < 0) price += 40;
+                price *= 5;
+
+                Debug.Log($"Selected railroad tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - price}");
+                player.money -= price;
+
+                Debug.Log($"Moving player {currPlayer} to tile {index}.");
+                player.MovePlayer(tiles[index]);
+                player.position = index;
+
                 ChangeState(GameState.RollDice);
                 break;
         }
@@ -208,5 +238,19 @@ public static class GameManager
         }
         players[currPlayer].GetComponent<Player>().DestroyPlayer();
         // TODO: check if only 1 player is left and finish the game if so
+    }
+
+    public static void RailroadRoutine(int railroadIndex)
+    {
+        ChangeState(GameState.Railroad);
+
+        foreach (GameObject tile in tiles)
+        {
+            RailroadTile railTile = tile.GetComponent<RailroadTile>();
+            if (railTile != null) // If tile is actually a railroad
+            {
+                if (railTile.index != railroadIndex) railTile.CanSelect = true;
+            }
+        }
     }
 }

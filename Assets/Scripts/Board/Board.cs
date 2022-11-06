@@ -71,7 +71,7 @@ public class Board : MonoBehaviour
         tiles[1].GetComponent<PropertyTile>().BaseLandingPrice = 2;
 
 
-        GameObject tileObj2 = new GameObject("tile-2", typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
+        GameObject tileObj2 = new GameObject("tile-2", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
         tiles.Add(tileObj2);
         tiles[2].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[2].GetComponent<BasicTile>().index = 2;
@@ -91,7 +91,7 @@ public class Board : MonoBehaviour
         tiles[4].GetComponent<BasicTile>().index = 4;
 
 
-        GameObject tileObj5 = new GameObject("tile-5", typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
+        GameObject tileObj5 = new GameObject("tile-5", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
         tiles.Add(tileObj5);
         tiles[5].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[5].GetComponent<BasicTile>().index = 5;
@@ -164,7 +164,7 @@ public class Board : MonoBehaviour
         tiles[14].GetComponent<PropertyTile>().BaseLandingPrice = 12;
 
 
-        GameObject tileObj15 = new GameObject("tile-15", typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
+        GameObject tileObj15 = new GameObject("tile-15", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
         tiles.Add(tileObj15);
         tiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[15].GetComponent<BasicTile>().index = 15;
@@ -178,7 +178,7 @@ public class Board : MonoBehaviour
         tiles[16].GetComponent<PropertyTile>().BaseLandingPrice = 14;
 
 
-        GameObject tileObj17 = new GameObject("tile-17", typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
+        GameObject tileObj17 = new GameObject("tile-17", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
         tiles.Add(tileObj17);
         tiles[17].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[17].GetComponent<BasicTile>().index = 17;
@@ -237,7 +237,7 @@ public class Board : MonoBehaviour
         tiles[24].GetComponent<PropertyTile>().BaseLandingPrice = 18;
 
 
-        GameObject tileObj25 = new GameObject("tile-25", typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
+        GameObject tileObj25 = new GameObject("tile-25", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
         tiles.Add(tileObj25);
         tiles[25].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[25].GetComponent<BasicTile>().index = 25;
@@ -296,7 +296,7 @@ public class Board : MonoBehaviour
         tiles[32].GetComponent<PropertyTile>().BaseLandingPrice = 26;
 
 
-        GameObject tileObj33 = new GameObject("tile-33", typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
+        GameObject tileObj33 = new GameObject("tile-33", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
         tiles.Add(tileObj33);
         tiles[33].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[33].GetComponent<BasicTile>().index = 33;
@@ -310,7 +310,7 @@ public class Board : MonoBehaviour
         tiles[34].GetComponent<PropertyTile>().BaseLandingPrice = 28;
 
 
-        GameObject tileObj35 = new GameObject("tile-35", typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
+        GameObject tileObj35 = new GameObject("tile-35", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
         tiles.Add(tileObj35);
         tiles[35].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[35].GetComponent<BasicTile>().index = 35;
