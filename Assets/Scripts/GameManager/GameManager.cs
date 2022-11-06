@@ -70,7 +70,6 @@ public static class GameManager
                 PropertyTile boughtTile = tiles[index].GetComponent<PropertyTile>();
 
                 GivePlayerProperty(currPlayer, index);
-                if (boughtTile.Level == 0) boughtTile.Level = 1;
                 Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - (boughtTile.PurchasePrice * boughtTile.Level)}"); // TODO: Delete once hands implemented
                 players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice * boughtTile.Level;
 
@@ -154,7 +153,7 @@ public static class GameManager
 
         // Check if the tile costs more money than the player has and only allow selection if it doesn't
         PropertyTile tile = tiles[index].GetComponent<PropertyTile>();
-        if (players[currPlayer].GetComponent<Player>().money >= tile.PurchasePrice)
+        if (players[currPlayer].GetComponent<Player>().money >= tile.PurchasePrice * tile.Level)
         {
             tiles[index].GetComponent<PropertyTile>().CanSelect = true;
         }
