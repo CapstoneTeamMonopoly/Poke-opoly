@@ -11,7 +11,8 @@ public static class GameManager
     private static List<GameObject> players;
     private static List<GameObject> tiles;
     private static List<GameObject> dice;
-    // Community chest and other deck should be here
+    private static GameObject ComDeck;
+    private static GameObject ChanceDeck;
 
     // Used to see if turn changes or if the same player goes twice
     public static bool doubles { get; set; }
@@ -30,7 +31,8 @@ public static class GameManager
     {
         RollDice,
         PlayerAction,
-        DrawCard,
+        DrawChanceCard,
+        DrawComCard,
         BuyProperty,
         UpgradeProperty,
         Railroad,
@@ -38,12 +40,14 @@ public static class GameManager
 
     private static GameState state;
 
-    public static void InitGameObjects(GameObject board, ref List<GameObject> players, ref List<GameObject> tiles, ref List<GameObject> dice)
+    public static void InitGameObjects(GameObject board, ref List<GameObject> players, ref List<GameObject> tiles, ref List<GameObject> dice, ref GameObject ComDeck, ref GameObject ChanceDeck)
     {
         GameManager.players = players;
         GameManager.tiles = tiles;
         GameManager.dice = dice;
         GameManager.board = board;
+        GameManager.ComDeck = ComDeck;
+        GameManager.ChanceDeck = ChanceDeck;
         handler = board.AddComponent<EventHandler>();
         ChangeState(state);
     }
@@ -93,6 +97,7 @@ public static class GameManager
                 ChangeState(GameState.RollDice);
                 break;
         }
+
     }
 
     /*
@@ -161,6 +166,33 @@ public static class GameManager
                 if (railTile.index != railroadIndex) railTile.CanSelect = true;
             }
         }
+    }
+
+    /*
+     * DECK FUNCTIONS
+     */
+
+
+    public static void CommunityRoutine()
+    {
+        ChangeState(GameState.DrawComCard);
+        ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
+    }
+
+    public static void DrawComCard()
+    {
+        ComDeck.Effect(ComDeck.DrawCard(), currPlayer, players, tiles);
+    }
+
+    public static void ChanceRoutine()
+    {
+        ChangeState(GameState.DrawChanceCard);
+        ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
+    }
+
+    public static void DrawChanceCard()
+    {
+        ChanceDeck.Effect(ComDeck.DrawCard(), currPlayer, ref players, ref tiles);
     }
 
     /*
@@ -243,6 +275,8 @@ public static class GameManager
         {
             die.GetComponent<Dice>().actionable = false;
         }
+        ComDeck.GetComponent<CommunityDeck>().CanSelect = false;
+        ChanceDeck.GetComponent<ChanceDeck>().CanSelect = false;
 
         switch (toState)
         {
@@ -265,6 +299,12 @@ public static class GameManager
             case GameState.Railroad:
                 // Allow skip button to be selectable
                 // TODO: Create a skip button
+                break;
+            case GameState.DrawComCard:
+                ComDeck.GetComponent<CommunityDeck>.CanSelect = true;
+                break;
+            case GameState.DrawChanceCard:
+                ChanceDeck.GetComponent<ChanceDeck>.CanSelect = true;
                 break;
         }
         state = toState;
