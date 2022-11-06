@@ -4,20 +4,6 @@ using UnityEngine;
 
 public class ActionTile : BasicTile
 {
-    // Start is called before the first frame update
-    public override void Start()
-    {
-        base.Start();
-        // Action goes here
-    }
-
-    // Update is called once per frame
-    public override void Update()
-    {
-        base.Update();
-        // Action goes here
-    }
-
     private void OnMouseDown()
     {
         if (CanSelect)

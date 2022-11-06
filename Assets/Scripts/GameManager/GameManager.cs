@@ -6,16 +6,18 @@ public static class GameManager
 {
     private static int currPlayer;
 
+    // Objects that the GameManager controls
     private static GameObject board;
     private static List<GameObject> players;
     private static List<GameObject> tiles;
     private static List<GameObject> dice;
+    // Community chest and other deck should be here
 
     // Used to see if turn changes or if the same player goes twice
     public static bool doubles { get; set; }
 
+    // EventHandler used to create coroutines
     private static EventHandler handler;
-    // Community chest and other deck should be here
 
     static GameManager()
     {
@@ -27,8 +29,6 @@ public static class GameManager
     public enum GameState
     {
         RollDice,
-        PlayerAction,
-        DrawCard,
     }
 
     private static GameState state;
@@ -67,10 +67,6 @@ public static class GameManager
                 }
                 doubles = false;
                 break;
-            case GameState.PlayerAction:
-                break;
-            case GameState.DrawCard:
-                break;
         }
         state = toState;
     }
@@ -98,18 +94,20 @@ public static class GameManager
         board.GetComponent<Board>().StartCoroutine(handler.StartRollEvent(dice[0], dice[1]));
     }
 
-    public static void MovePlayer(int dist)
+    // Called when the player moves based on rolling a dice, DON'T CALL VIA RAILROAD MOVING
+    public static void MovePlayerDice(int dist)
     {
+        // Get player and move
         Player player = players[currPlayer].GetComponent<Player>();
         player.position += dist;
         if (player.position >= 40)
         {
-            // passed go, give money
+            // TODO: passed go, give money
         }
         player.position %= 40;
         player.MovePlayer(tiles[player.position]);
 
-        // call functionality for landing on a tile
+        // Call functionality for landing on a tile
         tiles[player.position].GetComponent<BasicTile>().OnLand();
     }
 

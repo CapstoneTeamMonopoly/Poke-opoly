@@ -11,20 +11,6 @@ public class PropertyTile : BasicTile
     public int Level { get; set; }  // Adjusts the base landing price
     public int Full_Set { get; set; }  // Keeps track of whether 1 player owns all of this color
 
-    // Start is called before the first frame update
-    public override void Start()
-    {
-        base.Start();
-        // Action goes here
-    }
-
-    // Update is called once per frame
-    public override void Update()
-    {
-        base.Update();
-        // Action goes here
-    }
-
     public override void OnLand()
     {
         Debug.Log("Landed on a property");

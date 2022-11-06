@@ -14,19 +14,13 @@ public class BasicTile : TileObj
     public bool CanSelect { get; set; }
     public int index { get; set; }
 
-    // Start is called before the first frame update
-    public override void Start()
-    {
-    }
+    public override void Start() {}
 
-    // Update is called once per frame
-    public override void Update()
-    {
-        
-    }
+    public override void Update() {}
 
     private void OnMouseDown()
     {
+        Debug.Log("wah");
         if (CanSelect)
         {
             GameManager.TileClicked(index);
