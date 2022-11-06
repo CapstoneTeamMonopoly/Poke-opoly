@@ -36,6 +36,11 @@ public class Board : MonoBehaviour
         dice2.transform.position = new Vector3(9f, -2f, 0);
         dice.Add(dice1);
         dice.Add(dice2);
+        foreach (GameObject die in dice)
+        {
+            Vector3 size = Resources.Load<Sprite>("Dice/diceSelectable").bounds.size;
+            die.GetComponent<BoxCollider>().size = size;
+        }
     }
 
     private void InstantiatePlayers()
