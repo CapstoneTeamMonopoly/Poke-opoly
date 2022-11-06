@@ -40,6 +40,7 @@ public class Board : MonoBehaviour
         {
             Vector3 size = Resources.Load<Sprite>("Dice/diceSelectable").bounds.size;
             die.GetComponent<BoxCollider>().size = size;
+            die.GetComponent<Dice>().actionable = true;
         }
     }
 
@@ -52,7 +53,7 @@ public class Board : MonoBehaviour
             GameObject playerObj = new GameObject("player-" + i, typeof(SpriteRenderer), typeof(Player));
             playerObj.GetComponent<Player>().id = i;
             playerObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Board/player_{i}");
-            playerObj.GetComponent<Player>().MovePlayer(tiles[0]);
+            playerObj.GetComponent<Player>().InstantiatePlayerPosition(tiles[0]);
             players.Add(playerObj);
         }
     }
