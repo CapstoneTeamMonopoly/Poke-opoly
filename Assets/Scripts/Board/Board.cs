@@ -133,7 +133,7 @@ public class Board : MonoBehaviour
 
 
         // Next Corner!
-        GameObject tileObj10 = new GameObject("tile-10", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
+        GameObject tileObj10 = new GameObject("tile-10", typeof(BoxCollider), typeof(PokemonCenterTile), typeof(SpriteRenderer));
         tiles.Add(tileObj10);
         tiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[10].GetComponent<BasicTile>().index = 10;
@@ -279,7 +279,7 @@ public class Board : MonoBehaviour
 
 
         // Last Corner!
-        GameObject tileObj30 = new GameObject("tile-30", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
+        GameObject tileObj30 = new GameObject("tile-30", typeof(BoxCollider), typeof(TeamRocketTile), typeof(SpriteRenderer));
         tiles.Add(tileObj30);
         tiles[30].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[30].GetComponent<BasicTile>().index = 30;
