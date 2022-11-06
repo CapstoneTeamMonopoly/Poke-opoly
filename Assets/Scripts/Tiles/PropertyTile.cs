@@ -14,7 +14,7 @@ public class PropertyTile : BasicTile
     public PropertyTile()
     {
         Owner = -1; // Owner is -1 if no player owns
-        Level = 1; // By default evolution 1 (Level 1-3 is valid)
+        Level = 0; // By default evolution 1 (Level 0-3 is valid, 0 for when not owned)
     }
 
     public override void OnLand()
@@ -26,7 +26,8 @@ public class PropertyTile : BasicTile
         else
         {
             GameManager.PayOnLand(index);
-            GameManager.EndTileRoutine();
         }
     }
+
+    // TODO: Render three dots based off of the level to signify the evolution
 }

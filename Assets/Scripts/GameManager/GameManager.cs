@@ -30,6 +30,7 @@ public static class GameManager
     {
         RollDice,
         BuyProperty,
+        UpgradeProperty,
     }
 
     private static GameState state;
@@ -69,7 +70,8 @@ public static class GameManager
                 doubles = false;
                 break;
             case GameState.BuyProperty:
-                // Allow skip button to be selectable
+            case GameState.UpgradeProperty:
+                // Allow skip button to be selectable, fall through for all states that do this
                 // TODO: Create a skip button
                 break;
         }
@@ -124,9 +126,17 @@ public static class GameManager
             case GameState.BuyProperty:
                 // Set property owner to current player, subtract player money, change state to roll dice
                 PropertyTile boughtTile = tiles[index].GetComponent<PropertyTile>();
-                Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtTile.PurchasePrice}");
+                Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtTile.PurchasePrice}"); // TODO: Delete once hands implemented
                 boughtTile.Owner = currPlayer;
+                boughtTile.Level += 1;
                 players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice;
+                ChangeState(GameState.RollDice);
+                break;
+            case GameState.UpgradeProperty:
+                PropertyTile upgradedTile = tiles[index].GetComponent<PropertyTile>();
+                Debug.Log($"Upgraded tile {index}, level: {upgradedTile.Level + 1}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - upgradedTile.PurchasePrice}"); // TODO: Delete once hands implemented
+                upgradedTile.Level += 1;
+                players[currPlayer].GetComponent<Player>().money -= upgradedTile.PurchasePrice;
                 ChangeState(GameState.RollDice);
                 break;
         }
@@ -147,6 +157,7 @@ public static class GameManager
     public static void PayOnLand(int propertyIndex)
     {
         PropertyTile tile = tiles[propertyIndex].GetComponent<PropertyTile>();
+        Debug.Log($"Player {currPlayer} landed on property owned by player {tile.Owner}");
         if (tile.Owner != currPlayer)
         {
             int cost = tile.BaseLandingPrice * tile.Level;
@@ -160,12 +171,26 @@ public static class GameManager
             {
                 BankruptCurrentPlayer(tile.Owner);
             }
+            GameManager.EndTileRoutine();
+        }
+        else
+        {
+            if (tile.Level < 3)
+            {
+                Debug.Log("Upgrade property state");
+                ChangeState(GameState.UpgradeProperty);
+                // TODO: check if the tile upgrade costs more money than the player has and only allow selection if it doesn't
+                tiles[propertyIndex].GetComponent<PropertyTile>().CanSelect = true;
+            }
+            else
+            {
+                GameManager.EndTileRoutine();
+            }
         }
     }
 
     private static void BankruptCurrentPlayer(int debtedPlayer)
     {
-        // TODO: implement bankrupting
         Player bankruptPlayer = players[currPlayer].GetComponent<Player>();
         bankruptPlayer.bankrupt = true;
         bankruptPlayer.money = 0;
