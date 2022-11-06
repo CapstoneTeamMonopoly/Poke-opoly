@@ -156,6 +156,30 @@ public static class GameManager
             }
             players[currPlayer].GetComponent<Player>().money -= cost;
             players[tile.Owner].GetComponent<Player>().money += cost;
+            if (players[currPlayer].GetComponent<Player>().money < 0)
+            {
+                BankruptCurrentPlayer(tile.Owner);
+            }
+        }
+    }
+
+    private static void BankruptCurrentPlayer(int debtedPlayer)
+    {
+        // TODO: implement bankrupting
+        Player bankruptPlayer = players[currPlayer].GetComponent<Player>();
+        bankruptPlayer.bankrupt = true;
+        bankruptPlayer.money = 0;
+        foreach (GameObject tile in tiles)
+        {
+            PropertyTile property = tile.GetComponent<PropertyTile>();
+            if (property != null) // If tile is actually a property
+            {
+                if (property.Owner == currPlayer)
+                {
+                    property.Owner = debtedPlayer;
+                    Debug.Log($"Transfered property ${property.index} from player {currPlayer} to {debtedPlayer}");
+                }
+            }
         }
     }
 }
