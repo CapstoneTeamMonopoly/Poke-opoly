@@ -32,4 +32,11 @@ public class BasicTile : TileObj
             GameManager.TileClicked(index);
         }
     }
+
+    // Called when a player lands on this tile, starts tile functionality. At the end of each OnLand() function, GameManager.EndTileRoutine() must be called
+    public virtual void OnLand()
+    {
+        Debug.Log("Landed on a basic tile");
+        GameManager.EndTileRoutine();
+    }
 }

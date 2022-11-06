@@ -56,39 +56,6 @@ public class Board : MonoBehaviour
     {
         tiles = new List<GameObject>();
 
-        /*
-        // Y'all said to hardcode this instead, so that's what I'm doing - Zack
-        for (int i = 0; i < NUM_TILES; i++)
-        {
-            if (attributes[0] == "Property")
-            {
-                // Properties have 2 more attributes.
-                // attributes[2] is the purchase price for the tile.
-                // attributes[3] is the base landing price for the tile.
-                GameObject tileObj = new GameObject("tile-" + i, typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
-                tileObj.GetComponent<BasicTile>().index = i;
-                tileObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(attributes[1]);
-                tileObj.GetComponent<PropertyTile>().Purchase_Price = int.Parse(attributes[2]);
-                tileObj.GetComponent<PropertyTile>().Base_Landing_Price = int.Parse(attributes[3]);
-                tiles.Add(tileObj);
-            }
-            else if (attributes[0] == "Action")
-            {
-                GameObject tileObj = new GameObject("tile-" + i, typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
-                tileObj.GetComponent<BasicTile>().index = i;
-                tileObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(attributes[1]);
-                tiles.Add(tileObj);
-            }
-            else
-            {
-                // Maybe I shouldn't just try to slap anything else in as a basic tile, but. Eh.
-                GameObject tileObj = new GameObject("tile-" + i, typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
-                tileObj.GetComponent<BasicTile>().index = i;
-                tileObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(attributes[i]);
-            }
-        }
-        */
-
         // Go!
         GameObject tileObj0 = new GameObject("tile-0", typeof(BoxCollider), typeof(ActionTile), typeof(SpriteRenderer));
         tiles.Add(tileObj0);
@@ -431,14 +398,4 @@ public class Board : MonoBehaviour
             tile.transform.position = new Vector3(transform.position.x + xOffset, transform.position.y + yOffset, 0f);
         }
     }
-
-    /*
-    private void WriteBoard()
-    {
-        using (StreamWriter sw = new StreamWriter(Application.persistentDataPath + "/tile_attributes.txt"))
-        {
-            sw.WriteLine()
-        }
-    }
-    */
 }

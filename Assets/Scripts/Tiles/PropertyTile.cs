@@ -25,6 +25,12 @@ public class PropertyTile : BasicTile
         // Action goes here
     }
 
+    public override void OnLand()
+    {
+        Debug.Log("Landed on a property");
+        GameManager.EndTileRoutine();
+    }
+
     private void OnMouseDown()
     {
         if (CanSelect)
