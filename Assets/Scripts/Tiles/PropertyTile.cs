@@ -5,7 +5,7 @@ using UnityEngine;
 public class PropertyTile : BasicTile
 {
     public int Owner { get; set; } // Keeps track of the owner
-    //public string Color { get; set; } // The color of this tile
+    public string Type { get; set; } // The type of this tile, tracks owning sets
     public int PurchasePrice { get; set; }  // Price to be paid when purchasing the tile.
     public int BaseLandingPrice { get; set; }  // Price to be paid when landing on the tile.
     public int Level { get; set; }  // Adjusts the base landing price

@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class GameManager
 {
     private static int currPlayer;
 
     // Objects that the GameManager controls
+    private static GameObject skipButton;
     private static GameObject board;
     private static List<GameObject> players;
     private static List<GameObject> tiles;
@@ -36,6 +38,8 @@ public static class GameManager
         BuyProperty,
         UpgradeProperty,
         Railroad,
+        PokemonCenter,
+        TeamRocket,
     }
 
     private static GameState state;
@@ -48,9 +52,16 @@ public static class GameManager
         GameManager.board = board;
         GameManager.ComDeck = ComDeck;
         GameManager.ChanceDeck = ChanceDeck;
+        GameManager.skipButton = new GameObject("skip", typeof(BoxCollider), typeof(SpriteRenderer), typeof(SkipButton));
+        skipButton.transform.position = new Vector3(9, -5, 0);
+        skipButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/skip");
         handler = board.AddComponent<EventHandler>();
         ChangeState(state);
     }
+
+    /*
+     *  INTERACTIVITY
+     */
 
     public static void TileClicked(int index)
     {
@@ -62,8 +73,9 @@ public static class GameManager
                 PropertyTile boughtTile = tiles[index].GetComponent<PropertyTile>();
                 Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtTile.PurchasePrice}"); // TODO: Delete once hands implemented
 
-                boughtTile.Owner = currPlayer;
-                boughtTile.Level += 1;
+                GivePlayerProperty(currPlayer, index);
+                if (boughtTile.Level == 0) boughtTile.Level = 1;
+                // TODO: See if the player should be charged when picking up tiles previously bought by other players (case: Level != 0, if they shouldnt be charged, add line to the if statement above)
                 players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice;
 
                 ChangeState(GameState.RollDice);
@@ -78,24 +90,44 @@ public static class GameManager
                 ChangeState(GameState.RollDice);
                 break;
             case GameState.Railroad:
-                RailroadTile Destination = tiles[index].GetComponent<RailroadTile>();
                 Player player = players[currPlayer].GetComponent<Player>();
 
                 int start = players[currPlayer].GetComponent<Player>().position;
 
                 int price = index - start;
                 if (price < 0) price += 40;
-                price *= 5;
+                price *= 8;
 
-                Debug.Log($"Selected railroad tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - price}");
+                Debug.Log($"Selected railroad tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - price}"); // TODO: Delete once hands implemented
                 player.money -= price;
-
-                Debug.Log($"Moving player {currPlayer} to tile {index}.");
                 player.MovePlayer(tiles[index]);
                 player.position = index;
 
                 ChangeState(GameState.RollDice);
                 break;
+            case GameState.PokemonCenter:
+                PropertyTile freeUpgradedTile = tiles[index].GetComponent<PropertyTile>();
+                Debug.Log($"Upgraded tile {index} for free. Property goes from level {freeUpgradedTile.Level} to level {freeUpgradedTile.Level + 1}"); // TODO: Delete once hands implemented
+
+                freeUpgradedTile.Level += 1;
+
+                ChangeState(GameState.RollDice);
+                break;
+            case GameState.TeamRocket:
+                Debug.Log($"Stole tile {index}. Property goes from player {tiles[index].GetComponent<PropertyTile>().Owner} to player {currPlayer}"); // TODO: Delete once hands implemented
+                GivePlayerProperty(currPlayer, index);
+
+                ChangeState(GameState.RollDice);
+                break;
+        }
+    }
+
+    public static void SkipButtonPressed()
+    {
+        // All states change state to roll dice
+        if (skipButton.GetComponent<SpriteRenderer>().enabled)
+        {
+            ChangeState(GameState.RollDice);
         }
 
     }
@@ -104,24 +136,32 @@ public static class GameManager
      *  ROUTINE FUNCTIONS
      *  
      *  All routine functions must change state at the end of all execution paths
+     *  
+     *  Note: changing state removes all tile selectability so let tiles be selectable after changing state
      */
-
-    public static void BuyPropertyRoutine(int index)
-    {
-        ChangeState(GameState.BuyProperty);
-        // TODO: check if the tile costs more money than the player has and only allow selection if it doesn't
-        tiles[index].GetComponent<PropertyTile>().CanSelect = true;
-    }
 
     public static void EndTileRoutine()
     {
         ChangeState(GameState.RollDice);
     }
 
+    public static void BuyPropertyRoutine(int index)
+    {
+        ChangeState(GameState.BuyProperty);
+
+        // Check if the tile costs more money than the player has and only allow selection if it doesn't
+        PropertyTile tile = tiles[index].GetComponent<PropertyTile>();
+        if (players[currPlayer].GetComponent<Player>().money >= tile.PurchasePrice)
+        {
+            tiles[index].GetComponent<PropertyTile>().CanSelect = true;
+        }
+    }
+
     public static void PayOnLandRoutine(int propertyIndex)
     {
+        Player player = players[currPlayer].GetComponent<Player>();
         PropertyTile tile = tiles[propertyIndex].GetComponent<PropertyTile>();
-        Debug.Log($"Player {currPlayer} landed on property owned by player {tile.Owner}");
+        Debug.Log($"Player {currPlayer} landed on property owned by player {tile.Owner}"); // TODO: Delete once hands implemented
         if (tile.Owner != currPlayer)
         {
             int cost = tile.BaseLandingPrice * tile.Level;
@@ -129,26 +169,29 @@ public static class GameManager
             {
                 cost *= 2;
             }
-            players[currPlayer].GetComponent<Player>().money -= cost;
-            players[tile.Owner].GetComponent<Player>().money += cost;
-            if (players[currPlayer].GetComponent<Player>().money < 0)
+            player.money -= cost;
+            player.money += cost;
+            if (player.money < 0)
             {
                 BankruptCurrentPlayer(tile.Owner);
             }
-            GameManager.EndTileRoutine();
+            ChangeState(GameState.RollDice);
         }
         else
         {
             if (tile.Level < 3)
             {
-                Debug.Log("Upgrade property state");
                 ChangeState(GameState.UpgradeProperty);
-                // TODO: check if the tile upgrade costs more money than the player has and only allow selection if it doesn't
-                tiles[propertyIndex].GetComponent<PropertyTile>().CanSelect = true;
+
+                // Check if the tile upgrade costs more money than the player has and only allow selection if it doesn't
+                if (player.money >= tile.PurchasePrice)
+                {
+                    tile.CanSelect = true;
+                }
             }
             else
             {
-                GameManager.EndTileRoutine();
+                ChangeState(GameState.RollDice);
             }
         }
     }
@@ -160,12 +203,69 @@ public static class GameManager
         foreach (GameObject tile in tiles)
         {
             RailroadTile railTile = tile.GetComponent<RailroadTile>();
-            if (railTile != null) // If tile is actually a railroad
+            if (railTile != null) 
             {
-                // TODO: do math so that only railroads the player can afford to travel to can be selected
-                if (railTile.index != railroadIndex) railTile.CanSelect = true;
+                // Checks if the player can afford to travel to a railroad tile
+                Player player = players[currPlayer].GetComponent<Player>();
+
+                int start = players[currPlayer].GetComponent<Player>().position;
+
+                int price = railTile.index - start;
+                if (price < 0) price += 40;
+                price *= 8;
+
+                if (railTile.index != railroadIndex && price <= player.money) railTile.CanSelect = true;
             }
         }
+    }
+
+    public static void TeamRocketRoutine()
+    {
+        ChangeState(GameState.TeamRocket);
+
+        foreach (GameObject tile in tiles)
+        {
+            PropertyTile property = tile.GetComponent<PropertyTile>();
+            if (property != null)
+            {
+                // If the tile is owned but not by the current player, it is eligible to steal
+                if (property.Owner != currPlayer && property.Owner != -1)
+                {
+                    property.CanSelect = true;
+                }
+            }
+        }
+    }
+
+    public static void PokemonCenterRoutine()
+    {
+        ChangeState(GameState.PokemonCenter);
+
+        foreach (GameObject tile in tiles)
+        {
+            PropertyTile property = tile.GetComponent<PropertyTile>();
+            if (property != null)
+            {
+                // If the tile is owned by the current player and not max level, it is eligible for upgrade
+                if (property.Owner == currPlayer && property.Level < 3)
+                {
+                    property.CanSelect = true;
+                }
+            }
+        }
+    }
+
+    public static void TaxRoutine(int tax)
+    {
+        Player player = players[currPlayer].GetComponent<Player>();
+        player.money -= tax;
+        if (player.money < 0)
+        {
+            // Player lost to taxes so their pokemon are released back to have no owner
+            BankruptCurrentPlayer(-1);
+        }
+
+        ChangeState(GameState.RollDice);
     }
 
     /*
@@ -229,6 +329,44 @@ public static class GameManager
      * PRIVATE HELPER FUNCTIONS
      */
 
+    // Handles giving a player property and removing/setting set bonuses
+    // Note: ALWAYS CALL THIS FUNCTION WHEN CHANGING PROPERTY OWNERSHIP
+    private static void GivePlayerProperty(int player, int propertyIndex)
+    {
+        PropertyTile property = tiles[propertyIndex].GetComponent<PropertyTile>();
+        Player newOwnerPlayer = players[currPlayer].GetComponent<Player>();
+
+        bool ownsFullSet = true;
+
+        List<PropertyTile> typeSet = new List<PropertyTile>();
+
+        property.Owner = player;
+
+        foreach (GameObject tile in tiles)
+        {
+            PropertyTile otherProperty = tile.GetComponent<PropertyTile>();
+            if (otherProperty != null) // If tile is actually a property
+            {
+                if (otherProperty.Type == property.Type)
+                {
+                    otherProperty.FullSet = false;
+                    typeSet.Add(otherProperty);
+                    if (otherProperty.Owner != player) ownsFullSet = false;
+                }
+            }
+        }
+
+        // If player doesn't own the full set, we don't set properties to FullSet. Banks also can't own them.
+        if (!ownsFullSet || player == -1) return;
+
+        Debug.Log($"Player {player} owns full property set of type {property.Type}");
+
+        foreach (PropertyTile setTile in typeSet)
+        {
+            setTile.FullSet = true;
+        }
+    }
+
     private static void BankruptCurrentPlayer(int debtedPlayer)
     {
         Player bankruptPlayer = players[currPlayer].GetComponent<Player>();
@@ -241,7 +379,7 @@ public static class GameManager
             {
                 if (property.Owner == currPlayer)
                 {
-                    property.Owner = debtedPlayer;
+                    GivePlayerProperty(debtedPlayer, property.index);
                     Debug.Log($"Transfered property ${property.index} from player {currPlayer} to {debtedPlayer}");
                 }
             }
@@ -277,6 +415,7 @@ public static class GameManager
         }
         ComDeck.GetComponent<CommunityDeck>().CanSelect = false;
         ChanceDeck.GetComponent<ChanceDeck>().CanSelect = false;
+        skipButton.GetComponent<SpriteRenderer>().enabled = false;
 
         switch (toState)
         {
@@ -291,14 +430,13 @@ public static class GameManager
                 }
                 doubles = false;
                 break;
+            // These states all require the skip button to be selectable, uses case fallthrough
+            case GameState.PokemonCenter:
+            case GameState.TeamRocket:
             case GameState.BuyProperty:
             case GameState.UpgradeProperty:
-                // Allow skip button to be selectable, fall through for all states that do this
-                // TODO: Create a skip button
-                break;
             case GameState.Railroad:
-                // Allow skip button to be selectable
-                // TODO: Create a skip button
+                skipButton.GetComponent<SpriteRenderer>().enabled = true;
                 break;
             case GameState.DrawComCard:
                 ComDeck.GetComponent<CommunityDeck>.CanSelect = true;

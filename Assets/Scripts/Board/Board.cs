@@ -103,10 +103,11 @@ public class Board : MonoBehaviour
         tiles[3].GetComponent<PropertyTile>().Type = "Brown";
 
 
-        GameObject tileObj4 = new GameObject("tile-4", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
+        GameObject tileObj4 = new GameObject("tile-4", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
         tiles.Add(tileObj4);
         tiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[4].GetComponent<BasicTile>().index = 4;
+        tiles[4].GetComponent<TaxTile>().TaxAmount = 200;
 
 
         GameObject tileObj5 = new GameObject("tile-5", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
@@ -149,7 +150,7 @@ public class Board : MonoBehaviour
 
 
         // Next Corner!
-        GameObject tileObj10 = new GameObject("tile-10", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
+        GameObject tileObj10 = new GameObject("tile-10", typeof(BoxCollider), typeof(PokemonCenterTile), typeof(SpriteRenderer));
         tiles.Add(tileObj10);
         tiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[10].GetComponent<BasicTile>().index = 10;
@@ -307,7 +308,7 @@ public class Board : MonoBehaviour
 
 
         // Last Corner!
-        GameObject tileObj30 = new GameObject("tile-30", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
+        GameObject tileObj30 = new GameObject("tile-30", typeof(BoxCollider), typeof(TeamRocketTile), typeof(SpriteRenderer));
         tiles.Add(tileObj30);
         tiles[30].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[30].GetComponent<BasicTile>().index = 30;
@@ -367,10 +368,11 @@ public class Board : MonoBehaviour
         tiles[37].GetComponent<PropertyTile>().Type = "Blue";
 
 
-        GameObject tileObj38 = new GameObject("tile-38", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
+        GameObject tileObj38 = new GameObject("tile-38", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
         tiles.Add(tileObj38);
         tiles[38].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
         tiles[38].GetComponent<BasicTile>().index = 38;
+        tiles[38].GetComponent<TaxTile>().TaxAmount = 100;
 
 
         GameObject tileObj39 = new GameObject("tile-39", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
