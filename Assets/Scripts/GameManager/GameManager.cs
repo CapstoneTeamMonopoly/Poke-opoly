@@ -47,83 +47,6 @@ public static class GameManager
         handler = board.AddComponent<EventHandler>();
         ChangeState(state);
     }
-    
-    // Used to internally change state when changing selectable components is necessary
-    private static void ChangeState(GameState toState)
-    {
-        foreach (GameObject tile in tiles) {
-            tile.GetComponent<BasicTile>().CanSelect = false;
-        }
-        foreach (GameObject die in dice)
-        {
-            die.GetComponent<Dice>().actionable = false;
-        }
-
-        switch (toState)
-        {
-            case GameState.RollDice:
-                foreach (GameObject die in dice)
-                {
-                    die.GetComponent<Dice>().actionable = true;
-                }
-                if (!doubles)
-                {
-                    IncrementTurn();
-                }
-                doubles = false;
-                break;
-            case GameState.BuyProperty:
-            case GameState.UpgradeProperty:
-                // Allow skip button to be selectable, fall through for all states that do this
-                // TODO: Create a skip button
-                break;
-            case GameState.Railroad:
-                // Allow skip button to be selectable
-                // TODO: Create a skip button
-                break;
-        }
-        state = toState;
-    }
-
-    // Used for incrementing turn, recursion to skip bankrupted players
-    private static void IncrementTurn()
-    {
-        currPlayer += 1;
-        if (currPlayer >= 4)
-        {
-            currPlayer = 0;
-        }
-        if (players[currPlayer].GetComponent<Player>().bankrupt)
-        {
-            IncrementTurn();
-        }
-    }
-
-    public static void RollDice()
-    {
-        foreach (GameObject die in dice)
-        {
-            die.GetComponent<Dice>().actionable = false;
-        }
-        board.GetComponent<Board>().StartCoroutine(handler.StartRollEvent(dice[0], dice[1]));
-    }
-
-    // Called when the player moves based on rolling a dice, DON'T CALL VIA RAILROAD MOVING
-    public static void MovePlayerByDice(int dist)
-    {
-        // Get player and move
-        Player player = players[currPlayer].GetComponent<Player>();
-        player.position += dist;
-        if (player.position >= 40)
-        {
-            player.money += 200;
-        }
-        player.position %= 40;
-        player.MovePlayer(tiles[player.position]);
-
-        // Call functionality for landing on a tile
-        tiles[player.position].GetComponent<BasicTile>().OnLand();
-    }
 
     public static void TileClicked(int index)
     {
@@ -172,6 +95,12 @@ public static class GameManager
         }
     }
 
+    /*
+     *  ROUTINE FUNCTIONS
+     *  
+     *  All routine functions must change state at the end of all execution paths
+     */
+
     public static void BuyPropertyRoutine(int index)
     {
         ChangeState(GameState.BuyProperty);
@@ -184,7 +113,7 @@ public static class GameManager
         ChangeState(GameState.RollDice);
     }
 
-    public static void PayOnLand(int propertyIndex)
+    public static void PayOnLandRoutine(int propertyIndex)
     {
         PropertyTile tile = tiles[propertyIndex].GetComponent<PropertyTile>();
         Debug.Log($"Player {currPlayer} landed on property owned by player {tile.Owner}");
@@ -219,6 +148,55 @@ public static class GameManager
         }
     }
 
+    public static void RailroadRoutine(int railroadIndex)
+    {
+        ChangeState(GameState.Railroad);
+
+        foreach (GameObject tile in tiles)
+        {
+            RailroadTile railTile = tile.GetComponent<RailroadTile>();
+            if (railTile != null) // If tile is actually a railroad
+            {
+                // TODO: do math so that only railroads the player can afford to travel to can be selected
+                if (railTile.index != railroadIndex) railTile.CanSelect = true;
+            }
+        }
+    }
+
+    /*
+     * DICE FUNCTIONS
+     */
+
+    public static void RollDice()
+    {
+        foreach (GameObject die in dice)
+        {
+            die.GetComponent<Dice>().actionable = false;
+        }
+        board.GetComponent<Board>().StartCoroutine(handler.StartRollEvent(dice[0], dice[1]));
+    }
+
+    // Called when the player moves based on rolling a dice, DON'T CALL VIA RAILROAD MOVING
+    public static void MovePlayerByDice(int dist)
+    {
+        // Get player and move
+        Player player = players[currPlayer].GetComponent<Player>();
+        player.position += dist;
+        if (player.position >= 40)
+        {
+            player.money += 200;
+        }
+        player.position %= 40;
+        player.MovePlayer(tiles[player.position]);
+
+        // Call functionality for landing on a tile
+        tiles[player.position].GetComponent<BasicTile>().OnLand();
+    }
+
+    /*
+     * PRIVATE HELPER FUNCTIONS
+     */
+
     private static void BankruptCurrentPlayer(int debtedPlayer)
     {
         Player bankruptPlayer = players[currPlayer].GetComponent<Player>();
@@ -240,17 +218,55 @@ public static class GameManager
         // TODO: check if only 1 player is left and finish the game if so
     }
 
-    public static void RailroadRoutine(int railroadIndex)
+    // Used for incrementing turn, recursion to skip bankrupted players
+    private static void IncrementTurn()
     {
-        ChangeState(GameState.Railroad);
+        currPlayer += 1;
+        if (currPlayer >= 4)
+        {
+            currPlayer = 0;
+        }
+        if (players[currPlayer].GetComponent<Player>().bankrupt)
+        {
+            IncrementTurn();
+        }
+    }
 
+    // Used to internally change state when changing selectable components is necessary
+    private static void ChangeState(GameState toState)
+    {
         foreach (GameObject tile in tiles)
         {
-            RailroadTile railTile = tile.GetComponent<RailroadTile>();
-            if (railTile != null) // If tile is actually a railroad
-            {
-                if (railTile.index != railroadIndex) railTile.CanSelect = true;
-            }
+            tile.GetComponent<BasicTile>().CanSelect = false;
         }
+        foreach (GameObject die in dice)
+        {
+            die.GetComponent<Dice>().actionable = false;
+        }
+
+        switch (toState)
+        {
+            case GameState.RollDice:
+                foreach (GameObject die in dice)
+                {
+                    die.GetComponent<Dice>().actionable = true;
+                }
+                if (!doubles)
+                {
+                    IncrementTurn();
+                }
+                doubles = false;
+                break;
+            case GameState.BuyProperty:
+            case GameState.UpgradeProperty:
+                // Allow skip button to be selectable, fall through for all states that do this
+                // TODO: Create a skip button
+                break;
+            case GameState.Railroad:
+                // Allow skip button to be selectable
+                // TODO: Create a skip button
+                break;
+        }
+        state = toState;
     }
 }
