@@ -18,19 +18,19 @@ public class BasicTile : TileObj
 
     public override void Update() {}
 
-    private void OnMouseDown()
-    {
-        Debug.Log("wah");
-        if (CanSelect)
-        {
-            GameManager.TileClicked(index);
-        }
-    }
-
     // Called when a player lands on this tile, starts tile functionality. At the end of each OnLand() function, GameManager.EndTileRoutine() must be called
     public virtual void OnLand()
     {
         Debug.Log("Landed on a basic tile");
         GameManager.EndTileRoutine();
+    }
+
+    private void OnMouseDown()
+    {
+        if (CanSelect)
+        {
+            // Tell GameManager tile has been clicked
+            GameManager.TileClicked(index);
+        }
     }
 }

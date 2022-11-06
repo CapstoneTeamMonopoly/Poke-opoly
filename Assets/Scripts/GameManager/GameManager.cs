@@ -29,6 +29,7 @@ public static class GameManager
     public enum GameState
     {
         RollDice,
+        BuyProperty,
     }
 
     private static GameState state;
@@ -67,6 +68,10 @@ public static class GameManager
                 }
                 doubles = false;
                 break;
+            case GameState.BuyProperty:
+                // Allow skip button to be selectable
+                // TODO: Create a skip button
+                break;
         }
         state = toState;
     }
@@ -102,7 +107,7 @@ public static class GameManager
         player.position += dist;
         if (player.position >= 40)
         {
-            // TODO: passed go, give money
+            player.money += 200;
         }
         player.position %= 40;
         player.MovePlayer(tiles[player.position]);
@@ -113,11 +118,44 @@ public static class GameManager
 
     public static void TileClicked(int index)
     {
+        // Depending on the state, the function of tile clicked changes
+        switch (state)
+        {
+            case GameState.BuyProperty:
+                // Set property owner to current player, subtract player money, change state to roll dice
+                PropertyTile boughtTile = tiles[index].GetComponent<PropertyTile>();
+                Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtTile.PurchasePrice}");
+                boughtTile.Owner = currPlayer;
+                players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice;
+                ChangeState(GameState.RollDice);
+                break;
+        }
+    }
 
+    public static void BuyPropertyRoutine(int index)
+    {
+        ChangeState(GameState.BuyProperty);
+        // TODO: check if the tile costs more money than the player has and only allow selection if it doesn't
+        tiles[index].GetComponent<PropertyTile>().CanSelect = true;
     }
 
     public static void EndTileRoutine()
     {
         ChangeState(GameState.RollDice);
+    }
+
+    public static void PayOnLand(int propertyIndex)
+    {
+        PropertyTile tile = tiles[propertyIndex].GetComponent<PropertyTile>();
+        if (tile.Owner != currPlayer)
+        {
+            int cost = tile.BaseLandingPrice * tile.Level;
+            if (tile.FullSet)
+            {
+                cost *= 2;
+            }
+            players[currPlayer].GetComponent<Player>().money -= cost;
+            players[tile.Owner].GetComponent<Player>().money += cost;
+        }
     }
 }
