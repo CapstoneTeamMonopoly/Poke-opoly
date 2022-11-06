@@ -15,22 +15,35 @@ public class Dice : MonoBehaviour {
 	// Result of dice roll
 	private int result;
 
+    private GameObject diceSelectable;
+
     public int GetResult()
     {
         return result;
     }
 
 	// Use this for initialization
-	void Start ()
+	void Start()
     {
+        diceSelectable = new GameObject("diceSelector", typeof(SpriteRenderer));
+        diceSelectable.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Dice/diceSelectable");
+
         // Assign Renderer component
         rend = GetComponent<SpriteRenderer>();
 
         // Load dice sides sprites to array from DiceSides subfolder of Resources folder
-        diceSides = Resources.LoadAll<Sprite>("DiceSides/");
+        diceSides = Resources.LoadAll<Sprite>("Dice/DiceSides/");
 
         rend.sprite = diceSides[0];
-	}
+
+        diceSelectable.transform.localScale = transform.localScale;
+        diceSelectable.transform.position = transform.position + new Vector3(0, 0, -1);
+    }
+
+    void Update()
+    {
+        diceSelectable.GetComponent<SpriteRenderer>().enabled = actionable;
+    }
 	
     // If you left click over the dice then RollTheDice coroutine is started
     void OnMouseDown()
