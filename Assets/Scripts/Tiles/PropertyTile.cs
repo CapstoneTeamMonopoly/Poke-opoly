@@ -26,7 +26,7 @@ public class PropertyTile : BasicTile
         } 
         else
         {
-            GameManager.PayOnLandRoutine(index);
+            GameManager.PayPropertyRoutine(index);
         }
     }
 

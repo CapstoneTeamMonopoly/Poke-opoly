@@ -39,6 +39,7 @@ public static class GameManager
         Railroad,
         PokemonCenter,
         TeamRocket,
+        GameEnd,
     }
 
     private static GameState state;
@@ -159,7 +160,7 @@ public static class GameManager
         }
     }
 
-    public static void PayOnLandRoutine(int propertyIndex)
+    public static void PayPropertyRoutine(int propertyIndex)
     {
         Player player = players[currPlayer].GetComponent<Player>();
         PropertyTile tile = tiles[propertyIndex].GetComponent<PropertyTile>();
@@ -435,6 +436,16 @@ public static class GameManager
         }
         players[currPlayer].GetComponent<Player>().DestroyPlayer();
         // TODO: check if only 1 player is left and finish the game if so
+        int numBankrupt = 0;
+
+        foreach (GameObject playerObj in players)
+        {
+            Player player = playerObj.GetComponent<Player>();
+            if (numBankrupt == players.Count - 1)
+            {
+                ChangeState(GameState.GameEnd);
+            }
+        }
     }
 
     // Used for incrementing turn, recursion to skip bankrupted players
@@ -454,6 +465,9 @@ public static class GameManager
     // Used to internally change state when changing selectable components is necessary
     private static void ChangeState(GameState toState)
     {
+        // Once game has ended, game state is locked, scene has to be reloaded to play again
+        if (state == GameState.GameEnd) return;
+
         foreach (GameObject tile in tiles)
         {
             tile.GetComponent<BasicTile>().CanSelect = false;
@@ -466,6 +480,9 @@ public static class GameManager
 
         switch (toState)
         {
+            case GameState.GameEnd:
+                // TODO: Show clickable UI for game end/play coroutine animation
+                break;
             case GameState.RollDice:
                 foreach (GameObject die in dice)
                 {
@@ -487,6 +504,7 @@ public static class GameManager
                 skipButton.GetComponent<SpriteRenderer>().enabled = true;
                 break;
         }
+        
         state = toState;
     }
 }
