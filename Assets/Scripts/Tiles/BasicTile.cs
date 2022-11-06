@@ -23,7 +23,7 @@ public class BasicTile : TileObj
         tileSelectable.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/tileSelectable");
 
         tileSelectable.transform.localScale = transform.localScale;
-        tileSelectable.transform.position = transform.position;
+        tileSelectable.transform.position = transform.position + new Vector3(0, 0, -1);
     }
 
     public override void Update() 

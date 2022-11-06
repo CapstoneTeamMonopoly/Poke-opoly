@@ -37,7 +37,7 @@ public class Dice : MonoBehaviour {
         rend.sprite = diceSides[0];
 
         diceSelectable.transform.localScale = transform.localScale;
-        diceSelectable.transform.position = transform.position;
+        diceSelectable.transform.position = transform.position + new Vector3(0, 0, -1);
     }
 
     void Update()
