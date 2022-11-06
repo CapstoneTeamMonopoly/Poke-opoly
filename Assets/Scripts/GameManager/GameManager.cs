@@ -24,7 +24,7 @@ public static class GameManager
 
     static GameManager()
     {
-        currPlayer = -1;
+        currPlayer = 0;
         doubles = false;
         state = GameState.RollDice;
     }
@@ -55,8 +55,8 @@ public static class GameManager
         GameManager.skipButton = new GameObject("skip", typeof(BoxCollider), typeof(SpriteRenderer), typeof(SkipButton));
         skipButton.transform.position = new Vector3(9, -5, 0);
         skipButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/skip");
+        skipButton.GetComponent<SpriteRenderer>().enabled = false;
         handler = board.AddComponent<EventHandler>();
-        ChangeState(state);
     }
 
     /*
@@ -100,8 +100,7 @@ public static class GameManager
 
                 Debug.Log($"Selected railroad tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - price}"); // TODO: Delete once hands implemented
                 player.money -= price;
-                player.MovePlayer(tiles[index]);
-                player.position = index;
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[index]));
 
                 ChangeState(GameState.RollDice);
                 break;
@@ -313,13 +312,11 @@ public static class GameManager
     {
         // Get player and move
         Player player = players[currPlayer].GetComponent<Player>();
-        player.position += dist;
-        if (player.position >= 40)
+        if (player.position + dist >= 40)
         {
             player.money += 200;
         }
-        player.position %= 40;
-        player.MovePlayer(tiles[player.position]);
+        board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[player.position + dist]));
 
         // Call functionality for landing on a tile
         tiles[player.position].GetComponent<BasicTile>().OnLand();

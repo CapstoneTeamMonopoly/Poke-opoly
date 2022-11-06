@@ -20,4 +20,11 @@ public class EventHandler : MonoBehaviour
         }
         GameManager.MovePlayerByDice(roll1 + roll2);
     }
+
+    public IEnumerator MovePlayerTo(GameObject player, GameObject dest)
+    {
+        MoveEvent newEvent = new MoveEvent(player, dest);
+        yield return StartCoroutine(newEvent.RunEvent());
+        
+    }
 }
