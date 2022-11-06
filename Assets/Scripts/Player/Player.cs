@@ -28,6 +28,11 @@ public class Player : MonoBehaviour
 		playerControlled = true;
     }
 
+	public void DestroyPlayer()
+    {
+		Destroy(GetComponent<SpriteRenderer>());
+    }
+
 	public void MovePlayer(GameObject tile)
     {
 		Vector3 offset;

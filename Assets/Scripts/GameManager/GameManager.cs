@@ -181,5 +181,7 @@ public static class GameManager
                 }
             }
         }
+        players[currPlayer].GetComponent<Player>().DestroyPlayer();
+        // TODO: check if only 1 player is left and finish the game if so
     }
 }
