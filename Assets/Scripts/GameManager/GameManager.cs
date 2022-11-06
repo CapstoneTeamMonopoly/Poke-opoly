@@ -29,6 +29,8 @@ public static class GameManager
     public enum GameState
     {
         RollDice,
+        PlayerAction,
+        DrawCard,
         BuyProperty,
         Railroad,
     }

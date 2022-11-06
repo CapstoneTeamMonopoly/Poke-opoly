@@ -9,11 +9,6 @@ public class Event
 
     }
 
-    public void EndEvent()
-    {
-
-    }
-
     public IEnumerator RunEvent()
     {
         yield return new WaitForEndOfFrame();

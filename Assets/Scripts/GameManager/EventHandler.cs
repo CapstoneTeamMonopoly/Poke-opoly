@@ -14,6 +14,10 @@ public class EventHandler : MonoBehaviour
         yield return StartCoroutine(newEvent.RunEvent());
         int roll1 = dice1.GetComponent<Dice>().GetResult();
         int roll2 = dice2.GetComponent<Dice>().GetResult();
-        GameManager.MovePlayer(roll1 + roll2);
+        if (roll1 == roll2)
+        {
+            GameManager.doubles = true;
+        }
+        GameManager.MovePlayerByDice(roll1 + roll2);
     }
 }
