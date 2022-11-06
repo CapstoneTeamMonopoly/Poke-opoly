@@ -6,30 +6,27 @@ public class PropertyTile : BasicTile
 {
     public int Owner { get; set; } // Keeps track of the owner
     //public string Color { get; set; } // The color of this tile
-    public int Purchase_Price { get; set; }  // Price to be paid when purchasing the tile.
-    public int Base_Landing_Price { get; set; }  // Price to be paid when landing on the tile.
+    public int PurchasePrice { get; set; }  // Price to be paid when purchasing the tile.
+    public int BaseLandingPrice { get; set; }  // Price to be paid when landing on the tile.
     public int Level { get; set; }  // Adjusts the base landing price
-    public int Full_Set { get; set; }  // Keeps track of whether 1 player owns all of this color
+    public bool FullSet { get; set; }  // Keeps track of whether 1 player owns all of this color
 
-    // Start is called before the first frame update
-    public override void Start()
+    public PropertyTile()
     {
-        base.Start();
-        // Action goes here
+        Owner = -1; // Owner is -1 if no player owns
+        Level = 1; // By default evolution 1 (Level 1-3 is valid)
     }
 
-    // Update is called once per frame
-    public override void Update()
+    public override void OnLand()
     {
-        base.Update();
-        // Action goes here
-    }
-
-    private void OnMouseDown()
-    {
-        if (CanSelect)
+        Debug.Log($"Landed on a property: {Owner}");
+        if (Owner == -1) {
+            GameManager.BuyPropertyRoutine(index);
+        } 
+        else
         {
-            // Function will then need interact with the board to tell it that it's been chosen, and the board will then call the relevant function it expects when the tile is clicked on
+            GameManager.PayOnLand(index);
+            GameManager.EndTileRoutine();
         }
     }
 }

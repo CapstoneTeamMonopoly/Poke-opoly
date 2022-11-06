@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActionTile : BasicTile
+public class CommunityChestTile : ActionTile
 {
+
     // Start is called before the first frame update
     public override void Start()
     {
@@ -17,4 +18,14 @@ public class ActionTile : BasicTile
         base.Update();
         // Action goes here
     }
+
+
+    // Called when a player lands on this tile, starts tile functionality. At the end of each OnLand() function, GameManager.EndTileRoutine() must be called
+    public override void OnLand()
+    {
+        Debug.Log("Landed on community chest");
+
+        GameManager.EndTileRoutine();
+    }
 }
+
