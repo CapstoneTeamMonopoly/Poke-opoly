@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class GameManager
 {
     private static int currPlayer;
 
     // Objects that the GameManager controls
+    private static GameObject skipButton;
     private static GameObject board;
     private static List<GameObject> players;
     private static List<GameObject> tiles;
@@ -46,9 +48,16 @@ public static class GameManager
         GameManager.tiles = tiles;
         GameManager.dice = dice;
         GameManager.board = board;
+        GameManager.skipButton = new GameObject("skip", typeof(BoxCollider), typeof(SpriteRenderer), typeof(SkipButton));
+        skipButton.transform.position = new Vector3(9, -5, 0);
+        skipButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/skip");
         handler = board.AddComponent<EventHandler>();
         ChangeState(state);
     }
+
+    /*
+     *  INTERACTIVITY
+     */
 
     public static void TileClicked(int index)
     {
@@ -83,7 +92,7 @@ public static class GameManager
 
                 int price = index - start;
                 if (price < 0) price += 40;
-                price *= 5;
+                price *= 8;
 
                 Debug.Log($"Selected railroad tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - price}"); // TODO: Delete once hands implemented
                 player.money -= price;
@@ -106,6 +115,15 @@ public static class GameManager
 
                 ChangeState(GameState.RollDice);
                 break;
+        }
+    }
+
+    public static void SkipButtonPressed()
+    {
+        // All states change state to roll dice
+        if (skipButton.GetComponent<SpriteRenderer>().enabled)
+        {
+            ChangeState(GameState.RollDice);
         }
     }
 
@@ -189,7 +207,7 @@ public static class GameManager
 
                 int price = railTile.index - start;
                 if (price < 0) price += 40;
-                price *= 5;
+                price *= 8;
 
                 if (railTile.index != railroadIndex && price <= player.money) railTile.CanSelect = true;
             }
@@ -306,8 +324,8 @@ public static class GameManager
             }
         }
 
-        // If player doesn't own the full set, we don't set properties to FullSet
-        if (!ownsFullSet) return;
+        // If player doesn't own the full set, we don't set properties to FullSet. Banks also can't own them.
+        if (!ownsFullSet || player == -1) return;
 
         Debug.Log($"Player {player} owns full property set of type {property.Type}");
 
@@ -363,6 +381,7 @@ public static class GameManager
         {
             die.GetComponent<Dice>().actionable = false;
         }
+        skipButton.GetComponent<SpriteRenderer>().enabled = false;
 
         switch (toState)
         {
@@ -383,8 +402,7 @@ public static class GameManager
             case GameState.BuyProperty:
             case GameState.UpgradeProperty:
             case GameState.Railroad:
-                // Allow skip button to be selectable
-                // TODO: Create a skip button
+                skipButton.GetComponent<SpriteRenderer>().enabled = true;
                 break;
         }
         state = toState;
