@@ -61,7 +61,8 @@ public static class GameManager
                 Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtTile.PurchasePrice}"); // TODO: Delete once hands implemented
 
                 boughtTile.Owner = currPlayer;
-                boughtTile.Level += 1;
+                if (boughtTile.Level == 0) boughtTile.Level = 1;
+                // TODO: See if the player should be charged when picking up tiles previously bought by other players (case: Level != 0, if they shouldnt be charged, add line to the if statement above)
                 players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice;
 
                 ChangeState(GameState.RollDice);
@@ -114,6 +115,8 @@ public static class GameManager
      *  ROUTINE FUNCTIONS
      *  
      *  All routine functions must change state at the end of all execution paths
+     *  
+     *  Note: changing state removes all tile selectability so let tiles be selectable after changing state
      */
 
     public static void EndTileRoutine()
@@ -229,6 +232,19 @@ public static class GameManager
                 }
             }
         }
+    }
+
+    public static void TaxRoutine(int tax)
+    {
+        Player player = players[currPlayer].GetComponent<Player>();
+        player.money -= tax;
+        if (player.money < 0)
+        {
+            // Player lost to taxes so their pokemon are released back to have no owner
+            BankruptCurrentPlayer(-1);
+        }
+
+        ChangeState(GameState.RollDice);
     }
 
     /*
