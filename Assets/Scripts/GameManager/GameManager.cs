@@ -71,8 +71,7 @@ public static class GameManager
 
                 GivePlayerProperty(currPlayer, index);
                 if (boughtTile.Level == 0) boughtTile.Level = 1;
-                // TODO: See if the player should be charged when picking up tiles previously bought by other players (case: Level != 0, if they shouldnt be charged, add line to the if statement above)
-                players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice;
+                players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice * boughtTile.Level;
 
                 ChangeState(GameState.RollDice);
                 break;
