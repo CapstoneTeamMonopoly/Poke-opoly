@@ -100,7 +100,7 @@ public static class GameManager
     }
 
     // Called when the player moves based on rolling a dice, DON'T CALL VIA RAILROAD MOVING
-    public static void MovePlayerDice(int dist)
+    public static void MovePlayerByDice(int dist)
     {
         // Get player and move
         Player player = players[currPlayer].GetComponent<Player>();

@@ -18,6 +18,6 @@ public class EventHandler : MonoBehaviour
         {
             GameManager.doubles = true;
         }
-        GameManager.MovePlayerDice(roll1 + roll2);
+        GameManager.MovePlayerByDice(roll1 + roll2);
     }
 }

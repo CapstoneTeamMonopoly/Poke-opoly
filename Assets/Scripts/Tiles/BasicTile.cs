@@ -21,19 +21,14 @@ public class BasicTile : TileObj
     {
         tileSelectable = new GameObject($"selector-{index}", typeof(SpriteRenderer));
         tileSelectable.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/tileSelectable");
+
+        tileSelectable.transform.localScale = transform.localScale;
+        tileSelectable.transform.position = transform.position;
     }
 
     public override void Update() 
     {
-        tileSelectable.transform.localScale = transform.localScale;
-        if (CanSelect)
-        {
-            tileSelectable.transform.position = transform.position + new Vector3(0, 0, -3);
-        }
-        else
-        {
-            tileSelectable.transform.position = transform.position + new Vector3(0, 0, 1);
-        }    
+        tileSelectable.GetComponent<SpriteRenderer>().enabled = CanSelect;
     }
 
     // Called when a player lands on this tile, starts tile functionality. At the end of each OnLand() function, GameManager.EndTileRoutine() must be called
