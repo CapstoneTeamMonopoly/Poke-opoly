@@ -116,22 +116,28 @@ public static class GameManager
      *  All routine functions must change state at the end of all execution paths
      */
 
-    public static void BuyPropertyRoutine(int index)
-    {
-        ChangeState(GameState.BuyProperty);
-        // TODO: check if the tile costs more money than the player has and only allow selection if it doesn't
-        tiles[index].GetComponent<PropertyTile>().CanSelect = true;
-    }
-
     public static void EndTileRoutine()
     {
         ChangeState(GameState.RollDice);
     }
 
+    public static void BuyPropertyRoutine(int index)
+    {
+        ChangeState(GameState.BuyProperty);
+
+        // Check if the tile costs more money than the player has and only allow selection if it doesn't
+        PropertyTile tile = tiles[index].GetComponent<PropertyTile>();
+        if (players[currPlayer].GetComponent<Player>().money >= tile.PurchasePrice)
+        {
+            tiles[index].GetComponent<PropertyTile>().CanSelect = true;
+        }
+    }
+
     public static void PayOnLandRoutine(int propertyIndex)
     {
+        Player player = players[currPlayer].GetComponent<Player>();
         PropertyTile tile = tiles[propertyIndex].GetComponent<PropertyTile>();
-        Debug.Log($"Player {currPlayer} landed on property owned by player {tile.Owner}");
+        Debug.Log($"Player {currPlayer} landed on property owned by player {tile.Owner}"); // TODO: Delete once hands implemented
         if (tile.Owner != currPlayer)
         {
             int cost = tile.BaseLandingPrice * tile.Level;
@@ -139,9 +145,9 @@ public static class GameManager
             {
                 cost *= 2;
             }
-            players[currPlayer].GetComponent<Player>().money -= cost;
-            players[tile.Owner].GetComponent<Player>().money += cost;
-            if (players[currPlayer].GetComponent<Player>().money < 0)
+            player.money -= cost;
+            player.money += cost;
+            if (player.money < 0)
             {
                 BankruptCurrentPlayer(tile.Owner);
             }
@@ -151,10 +157,13 @@ public static class GameManager
         {
             if (tile.Level < 3)
             {
-                Debug.Log("Upgrade property state");
                 ChangeState(GameState.UpgradeProperty);
-                // TODO: check if the tile upgrade costs more money than the player has and only allow selection if it doesn't
-                tiles[propertyIndex].GetComponent<PropertyTile>().CanSelect = true;
+
+                // Check if the tile upgrade costs more money than the player has and only allow selection if it doesn't
+                if (player.money >= tile.PurchasePrice)
+                {
+                    tile.CanSelect = true;
+                }
             }
             else
             {
@@ -170,10 +179,18 @@ public static class GameManager
         foreach (GameObject tile in tiles)
         {
             RailroadTile railTile = tile.GetComponent<RailroadTile>();
-            if (railTile != null) // If tile is actually a railroad
+            if (railTile != null) 
             {
-                // TODO: do math so that only railroads the player can afford to travel to can be selected
-                if (railTile.index != railroadIndex) railTile.CanSelect = true;
+                // Checks if the player can afford to travel to a railroad tile
+                Player player = players[currPlayer].GetComponent<Player>();
+
+                int start = players[currPlayer].GetComponent<Player>().position;
+
+                int price = railTile.index - start;
+                if (price < 0) price += 40;
+                price *= 5;
+
+                if (railTile.index != railroadIndex && price <= player.money) railTile.CanSelect = true;
             }
         }
     }
