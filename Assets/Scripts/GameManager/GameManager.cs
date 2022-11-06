@@ -174,6 +174,7 @@ public static class GameManager
             }
             player.money -= cost;
             players[tile.Owner].GetComponent<Player>().money += cost;
+            Debug.Log($"Player {currPlayer} has ${player.money}, and player {tile.Owner} has ${players[tile.Owner].GetComponent<Player>().money}"); // TODO: Delete once hands implemented
             if (player.money < 0)
             {
                 BankruptCurrentPlayer(tile.Owner);
@@ -307,6 +308,7 @@ public static class GameManager
 
             player.money -= cost;
             players[tile.Owner].GetComponent<Player>().money += cost;
+            Debug.Log($"Player {currPlayer} has ${player.money}, and player {tile.Owner} has ${players[tile.Owner].GetComponent<Player>().money}"); // TODO: Delete once hands implemented
             if (player.money < 0)
             {
                 BankruptCurrentPlayer(tile.Owner);
@@ -337,7 +339,7 @@ public static class GameManager
         {
             player.money += 200;
         }
-        board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[player.position + dist]));
+        board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[(player.position + dist) % 40]));
 
         // Call functionality for landing on a tile
         tiles[player.position].GetComponent<BasicTile>().OnLand();
