@@ -34,6 +34,7 @@ public static class GameManager
         PlayerAction,
         DrawCard,
         BuyProperty,
+        BuyUtility,
         UpgradeProperty,
         Railroad,
         PokemonCenter,
@@ -67,11 +68,20 @@ public static class GameManager
             case GameState.BuyProperty:
                 // Set property owner to current player, subtract player money, change state to roll dice
                 PropertyTile boughtTile = tiles[index].GetComponent<PropertyTile>();
-                Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtTile.PurchasePrice}"); // TODO: Delete once hands implemented
 
                 GivePlayerProperty(currPlayer, index);
                 if (boughtTile.Level == 0) boughtTile.Level = 1;
+                Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - (boughtTile.PurchasePrice * boughtTile.Level)}"); // TODO: Delete once hands implemented
                 players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice * boughtTile.Level;
+
+                ChangeState(GameState.RollDice);
+                break;
+            case GameState.BuyUtility:
+                UtilityTile boughtUtility = tiles[index].GetComponent<UtilityTile>();
+
+                GivePlayerUtility(currPlayer, index);
+                Debug.Log($"Bought utility {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtUtility.PurchasePrice}"); // TODO: Delete once hands implemented
+                players[currPlayer].GetComponent<Player>().money -= boughtUtility.PurchasePrice;
 
                 ChangeState(GameState.RollDice);
                 break;
@@ -163,7 +173,7 @@ public static class GameManager
                 cost *= 2;
             }
             player.money -= cost;
-            player.money += cost;
+            players[tile.Owner].GetComponent<Player>().money += cost;
             if (player.money < 0)
             {
                 BankruptCurrentPlayer(tile.Owner);
@@ -261,6 +271,50 @@ public static class GameManager
         ChangeState(GameState.RollDice);
     }
 
+    public static void BuyUtilityRoutine(int utilityIndex)
+    {
+        ChangeState(GameState.BuyUtility);
+
+        // Check if the tile costs more money than the player has and only allow selection if it doesn't
+        UtilityTile tile = tiles[utilityIndex].GetComponent<UtilityTile>();
+        if (players[currPlayer].GetComponent<Player>().money >= tile.PurchasePrice)
+        {
+            tiles[utilityIndex].GetComponent<UtilityTile>().CanSelect = true;
+        }
+    }
+
+    public static void PayUtilityRoutine(int utilityIndex)
+    {
+        Player player = players[currPlayer].GetComponent<Player>();
+        UtilityTile tile = tiles[utilityIndex].GetComponent<UtilityTile>();
+        Debug.Log($"Player {currPlayer} landed on utility owned by player {tile.Owner}"); // TODO: Delete once hands implemented
+        if (tile.Owner != currPlayer)
+        {
+            int roll1 = dice[0].GetComponent<Dice>().GetResult();
+            int roll2 = dice[1].GetComponent<Dice>().GetResult();
+            int multiplier;
+
+            if (tile.FullSet)
+            {
+                multiplier = 10;
+            }
+            else
+            {
+                multiplier = 4;
+            }    
+
+            int cost = (roll1 + roll2) * multiplier;
+
+            player.money -= cost;
+            players[tile.Owner].GetComponent<Player>().money += cost;
+            if (player.money < 0)
+            {
+                BankruptCurrentPlayer(tile.Owner);
+            }
+        }
+        ChangeState(GameState.RollDice);
+    }
+
     /*
      * DICE FUNCTIONS
      */
@@ -298,7 +352,6 @@ public static class GameManager
     private static void GivePlayerProperty(int player, int propertyIndex)
     {
         PropertyTile property = tiles[propertyIndex].GetComponent<PropertyTile>();
-        Player newOwnerPlayer = players[currPlayer].GetComponent<Player>();
 
         bool ownsFullSet = true;
 
@@ -326,6 +379,37 @@ public static class GameManager
         Debug.Log($"Player {player} owns full property set of type {property.Type}");
 
         foreach (PropertyTile setTile in typeSet)
+        {
+            setTile.FullSet = true;
+        }
+    }
+
+    private static void GivePlayerUtility(int player, int utilityIndex)
+    {
+        UtilityTile utility = tiles[utilityIndex].GetComponent<UtilityTile>();
+        utility.Owner = player;
+
+        bool ownsFullSet = true;
+
+        List<UtilityTile> utilitySet = new List<UtilityTile>();
+
+        foreach (GameObject tile in tiles)
+        {
+            UtilityTile otherUtility = tile.GetComponent<UtilityTile>();
+            if (otherUtility != null) // If tile is actually a utility
+            {
+                otherUtility.FullSet = false;
+                utilitySet.Add(otherUtility);
+                if (otherUtility.Owner != player) ownsFullSet = false;
+            }
+        }
+
+        // If player doesn't own the full set, we don't set properties to FullSet. Banks also can't own them.
+        if (!ownsFullSet || player == -1) return;
+
+        Debug.Log($"Player {player} owns full utility set");
+
+        foreach (UtilityTile setTile in utilitySet)
         {
             setTile.FullSet = true;
         }
@@ -396,6 +480,7 @@ public static class GameManager
             case GameState.PokemonCenter:
             case GameState.TeamRocket:
             case GameState.BuyProperty:
+            case GameState.BuyUtility:
             case GameState.UpgradeProperty:
             case GameState.Railroad:
                 skipButton.GetComponent<SpriteRenderer>().enabled = true;
