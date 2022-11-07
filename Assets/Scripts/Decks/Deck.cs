@@ -54,4 +54,8 @@ public class Deck : MonoBehaviour
         return card;
     }
 
+    public void DrawOver()
+    {
+        GameManager.EndActionRoutine();
+    }
 }

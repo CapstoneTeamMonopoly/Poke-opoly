@@ -11,9 +11,7 @@ public class EventHandler : MonoBehaviour
     public IEnumerator StartRollEvent(GameObject dice1, GameObject dice2)
     {
         RollEvent newEvent = new RollEvent(dice1, dice2);
-        IEnumerator coroutine = newEvent.RunEvent();
-        yield return StartCoroutine(coroutine);
-        StopCoroutine(coroutine);
+        yield return StartCoroutine(newEvent.RunEvent());
         int roll1 = dice1.GetComponent<Dice>().GetResult();
         int roll2 = dice2.GetComponent<Dice>().GetResult();
         if (roll1 == roll2)
@@ -26,8 +24,13 @@ public class EventHandler : MonoBehaviour
     public IEnumerator MovePlayerTo(GameObject player, GameObject dest)
     {
         MoveEvent newEvent = new MoveEvent(player, dest);
-        IEnumerator coroutine = newEvent.RunEvent();
-        yield return StartCoroutine(coroutine);
-        StopCoroutine(coroutine);
+        yield return StartCoroutine(newEvent.RunEvent());
+        GameManager.PlayerLand(player.GetComponent<Player>().position);
+    }
+
+    public IEnumerator MovePlayerNoLand(GameObject player, GameObject dest)
+    {
+        MoveEvent newEvent = new MoveEvent(player, dest);
+        yield return StartCoroutine(newEvent.RunEvent());
     }
 }

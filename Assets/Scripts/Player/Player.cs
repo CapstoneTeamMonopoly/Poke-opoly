@@ -6,13 +6,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 	//How much money a player has at any given time.
-	public int money;
+	public int money { get; private set; }
 
 	//Bankruptcy flag set to true if they ever go bankrupt.
 	public bool bankrupt;
 
 	//Position that changes over time.
-	public int position;
+	public int position { get; private set; }
 
 	//Flag for if player is an AI
 	public bool playerControlled;
@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
 		bankrupt = false;
 		money = 1500;
 		position = 0;
-		playerControlled = true;
+		playerControlled = false;
     }
 
 	public void DestroyPlayer()
@@ -116,7 +116,8 @@ public class Player : MonoBehaviour
         {
 			yield return MoveToPosition(waypoint.transform.position + offset);
         }
-    }
+		yield return new WaitForSeconds(0.5f);
+	}
 
 	private IEnumerator MoveToPosition(Vector3 dest)
     {
@@ -125,6 +126,21 @@ public class Player : MonoBehaviour
 			gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, dest, 20 * Time.deltaTime);
 			yield return null;
         }
+    }
+
+	public void ChangeBalance(int amount)
+    {
+		if (!bankrupt)
+        {
+			money += amount;
+			// TODO: Call a GameManager function to do a routine visually adding money to player hand
+		}
+	}
+
+	public void GoBankrupt()
+    {
+		bankrupt = true;
+		money = 0;
     }
 };
 

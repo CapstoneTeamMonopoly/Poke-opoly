@@ -11,7 +11,6 @@ public class Board : MonoBehaviour
     private GameObject chanceDeck;
     private const int NUM_TILES = 40;
 
-    // Start is called before the first frame update
     void Start()
     {
         // Create board tiles
@@ -28,7 +27,7 @@ public class Board : MonoBehaviour
         InstantiateDecks();
 
         // Initiate game manager
-        GameManager.InitGameObjects(gameObject, ref(players), ref(tiles), ref(dice), ref(communityDeck), ref(chanceDeck));
+        GameManager.InitGameObjects(gameObject, ref (players), ref (tiles), ref (dice), ref (communityDeck), ref (chanceDeck));
     }
 
     private void InstantiateDice()

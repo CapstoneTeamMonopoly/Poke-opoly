@@ -15,6 +15,7 @@ public static class GameManager
     private static List<GameObject> dice;
     private static GameObject ComDeck;
     private static GameObject ChanceDeck;
+    private static AI aiPlayer;
 
     // Used to see if turn changes or if the same player goes twice
     public static bool doubles { get; set; }
@@ -24,7 +25,7 @@ public static class GameManager
 
     static GameManager()
     {
-        currPlayer = 0;
+        currPlayer = -1;
         doubles = false;
         state = GameState.RollDice;
     }
@@ -32,7 +33,6 @@ public static class GameManager
     public enum GameState
     {
         RollDice,
-        PlayerAction,
         DrawChanceCard,
         DrawComCard,
         BuyProperty,
@@ -55,10 +55,12 @@ public static class GameManager
         GameManager.ComDeck = ComDeck;
         GameManager.ChanceDeck = ChanceDeck;
         GameManager.skipButton = new GameObject("skip", typeof(BoxCollider), typeof(SpriteRenderer), typeof(SkipButton));
+        GameManager.aiPlayer = new AI();
         skipButton.transform.position = new Vector3(9, -5, 0);
         skipButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/skip");
         skipButton.GetComponent<SpriteRenderer>().enabled = false;
         handler = board.AddComponent<EventHandler>();
+        ChangeState(GameState.RollDice);
     }
 
     /*
@@ -76,27 +78,21 @@ public static class GameManager
 
                 GivePlayerProperty(currPlayer, index);
                 Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - (boughtTile.PurchasePrice * boughtTile.Level)}"); // TODO: Delete once hands implemented
-                players[currPlayer].GetComponent<Player>().money -= boughtTile.PurchasePrice * boughtTile.Level;
-
-                ChangeState(GameState.RollDice);
+                players[currPlayer].GetComponent<Player>().ChangeBalance(-boughtTile.PurchasePrice * boughtTile.Level);
                 break;
             case GameState.BuyUtility:
                 UtilityTile boughtUtility = tiles[index].GetComponent<UtilityTile>();
 
                 GivePlayerUtility(currPlayer, index);
                 Debug.Log($"Bought utility {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtUtility.PurchasePrice}"); // TODO: Delete once hands implemented
-                players[currPlayer].GetComponent<Player>().money -= boughtUtility.PurchasePrice;
-
-                ChangeState(GameState.RollDice);
+                players[currPlayer].GetComponent<Player>().ChangeBalance(-boughtUtility.PurchasePrice);
                 break;
             case GameState.UpgradeProperty:
                 PropertyTile upgradedTile = tiles[index].GetComponent<PropertyTile>();
                 Debug.Log($"Upgraded tile {index}, level: {upgradedTile.Level + 1}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - upgradedTile.PurchasePrice}"); // TODO: Delete once hands implemented
 
                 upgradedTile.Level += 1;
-                players[currPlayer].GetComponent<Player>().money -= upgradedTile.PurchasePrice;
-
-                ChangeState(GameState.RollDice);
+                players[currPlayer].GetComponent<Player>().ChangeBalance(-upgradedTile.PurchasePrice);
                 break;
             case GameState.Railroad:
                 Player player = players[currPlayer].GetComponent<Player>();
@@ -108,26 +104,23 @@ public static class GameManager
                 price *= 8;
 
                 Debug.Log($"Selected railroad tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - price}"); // TODO: Delete once hands implemented
-                player.money -= price;
-                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[index]));
-
-                ChangeState(GameState.RollDice);
+                player.ChangeBalance(-price);
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerNoLand(players[currPlayer], tiles[index]));
                 break;
             case GameState.PokemonCenter:
                 PropertyTile freeUpgradedTile = tiles[index].GetComponent<PropertyTile>();
                 Debug.Log($"Upgraded tile {index} for free. Property goes from level {freeUpgradedTile.Level} to level {freeUpgradedTile.Level + 1}"); // TODO: Delete once hands implemented
 
                 freeUpgradedTile.Level += 1;
-
-                ChangeState(GameState.RollDice);
                 break;
             case GameState.TeamRocket:
                 Debug.Log($"Stole tile {index}. Property goes from player {tiles[index].GetComponent<PropertyTile>().Owner} to player {currPlayer}"); // TODO: Delete once hands implemented
                 GivePlayerProperty(currPlayer, index);
-
-                ChangeState(GameState.RollDice);
                 break;
         }
+
+        ResetSelections();
+        ChangeState(GameState.RollDice);
     }
 
     public static void SkipButtonPressed()
@@ -135,9 +128,25 @@ public static class GameManager
         // All states change state to roll dice
         if (skipButton.GetComponent<SpriteRenderer>().enabled)
         {
+            ResetSelections();
             ChangeState(GameState.RollDice);
         }
 
+    }
+
+    public static List<GameObject> GetSelectableTiles()
+    {
+        List<GameObject> selectables = new List<GameObject>();
+
+        foreach (GameObject tile in tiles)
+        {
+            if (tile.GetComponent<BasicTile>().CanSelect)
+            {
+                selectables.Add(tile);
+            }
+        }
+
+        return selectables;
     }
 
     /*
@@ -148,14 +157,15 @@ public static class GameManager
      *  Note: changing state removes all tile selectability so let tiles be selectable after changing state
      */
 
-    public static void EndTileRoutine()
+    public static void EndActionRoutine()
     {
+        ResetSelections();
         ChangeState(GameState.RollDice);
     }
 
     public static void BuyPropertyRoutine(int index)
     {
-        ChangeState(GameState.BuyProperty);
+        ResetSelections();
 
         // Check if the tile costs more money than the player has and only allow selection if it doesn't
         PropertyTile tile = tiles[index].GetComponent<PropertyTile>();
@@ -163,6 +173,7 @@ public static class GameManager
         {
             tiles[index].GetComponent<PropertyTile>().CanSelect = true;
         }
+        ChangeState(GameState.BuyProperty);
     }
 
     public static void PayPropertyRoutine(int propertyIndex)
@@ -177,29 +188,32 @@ public static class GameManager
             {
                 cost *= 2;
             }
-            player.money -= cost;
-            players[tile.Owner].GetComponent<Player>().money += cost;
+            player.ChangeBalance(-cost);
+            players[tile.Owner].GetComponent<Player>().ChangeBalance(cost);
             Debug.Log($"Player {currPlayer} has ${player.money}, and player {tile.Owner} has ${players[tile.Owner].GetComponent<Player>().money}"); // TODO: Delete once hands implemented
             if (player.money < 0)
             {
                 BankruptCurrentPlayer(tile.Owner);
             }
+            ResetSelections();
             ChangeState(GameState.RollDice);
         }
         else
         {
             if (tile.Level < 3)
             {
-                ChangeState(GameState.UpgradeProperty);
+                ResetSelections();
 
                 // Check if the tile upgrade costs more money than the player has and only allow selection if it doesn't
                 if (player.money >= tile.PurchasePrice)
                 {
                     tile.CanSelect = true;
                 }
+                ChangeState(GameState.UpgradeProperty);
             }
             else
             {
+                ResetSelections();
                 ChangeState(GameState.RollDice);
             }
         }
@@ -207,7 +221,7 @@ public static class GameManager
 
     public static void RailroadRoutine(int railroadIndex)
     {
-        ChangeState(GameState.Railroad);
+        ResetSelections();
 
         foreach (GameObject tile in tiles)
         {
@@ -226,11 +240,12 @@ public static class GameManager
                 if (railTile.index != railroadIndex && price <= player.money) railTile.CanSelect = true;
             }
         }
+        ChangeState(GameState.Railroad);
     }
 
     public static void TeamRocketRoutine()
     {
-        ChangeState(GameState.TeamRocket);
+        ResetSelections();
 
         foreach (GameObject tile in tiles)
         {
@@ -244,11 +259,12 @@ public static class GameManager
                 }
             }
         }
+        ChangeState(GameState.TeamRocket);
     }
 
     public static void PokemonCenterRoutine()
     {
-        ChangeState(GameState.PokemonCenter);
+        ResetSelections();
 
         foreach (GameObject tile in tiles)
         {
@@ -262,24 +278,26 @@ public static class GameManager
                 }
             }
         }
+        ChangeState(GameState.PokemonCenter);
     }
 
     public static void TaxRoutine(int tax)
     {
         Player player = players[currPlayer].GetComponent<Player>();
-        player.money -= tax;
+        player.ChangeBalance(-tax);
         if (player.money < 0)
         {
             // Player lost to taxes so their pokemon are released back to have no owner
             BankruptCurrentPlayer(-1);
         }
 
+        ResetSelections();
         ChangeState(GameState.RollDice);
     }
 
     public static void BuyUtilityRoutine(int utilityIndex)
     {
-        ChangeState(GameState.BuyUtility);
+        ResetSelections();
 
         // Check if the tile costs more money than the player has and only allow selection if it doesn't
         UtilityTile tile = tiles[utilityIndex].GetComponent<UtilityTile>();
@@ -287,6 +305,7 @@ public static class GameManager
         {
             tiles[utilityIndex].GetComponent<UtilityTile>().CanSelect = true;
         }
+        ChangeState(GameState.BuyUtility);
     }
 
     public static void PayUtilityRoutine(int utilityIndex)
@@ -311,14 +330,15 @@ public static class GameManager
 
             int cost = (roll1 + roll2) * multiplier;
 
-            player.money -= cost;
-            players[tile.Owner].GetComponent<Player>().money += cost;
+            player.ChangeBalance(-cost);
+            players[tile.Owner].GetComponent<Player>().ChangeBalance(cost);
             Debug.Log($"Player {currPlayer} has ${player.money}, and player {tile.Owner} has ${players[tile.Owner].GetComponent<Player>().money}"); // TODO: Delete once hands implemented
             if (player.money < 0)
             {
                 BankruptCurrentPlayer(tile.Owner);
             }
         }
+        ResetSelections();
         ChangeState(GameState.RollDice);
     }
 
@@ -328,26 +348,26 @@ public static class GameManager
 
     public static void CommunityRoutine()
     {
-        ChangeState(GameState.DrawComCard);
+        ResetSelections();
         ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
+        ChangeState(GameState.DrawComCard);
     }
 
     public static void DrawComCard()
     {
         ComDeck.GetComponent<CommunityDeck>().Effect(ComDeck.GetComponent<CommunityDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
-        ChangeState(GameState.RollDice);
     }
 
     public static void ChanceRoutine()
     {
-        ChangeState(GameState.DrawChanceCard);
+        ResetSelections();
         ChanceDeck.GetComponent<ChanceDeck>().CanSelect = true;
+        ChangeState(GameState.DrawChanceCard);
     }
 
     public static void DrawChanceCard()
     {
         ChanceDeck.GetComponent<ChanceDeck>().Effect(ChanceDeck.GetComponent<ChanceDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
-        ChangeState(GameState.RollDice);
     }
 
     /*
@@ -379,12 +399,15 @@ public static class GameManager
         Player player = players[currPlayer].GetComponent<Player>();
         if (player.position + dist >= 40)
         {
-            player.money += 200;
+            player.ChangeBalance(200);
         }
         board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[(player.position + dist) % 40]));
+    }
 
+    public static void PlayerLand(int index)
+    {
         // Call functionality for landing on a tile
-        tiles[player.position].GetComponent<BasicTile>().OnLand();
+        tiles[index].GetComponent<BasicTile>().OnLand();
     }
 
     /*
@@ -396,12 +419,11 @@ public static class GameManager
     private static void GivePlayerProperty(int player, int propertyIndex)
     {
         PropertyTile property = tiles[propertyIndex].GetComponent<PropertyTile>();
+        property.SetOwner(player);
 
         bool ownsFullSet = true;
 
         List<PropertyTile> typeSet = new List<PropertyTile>();
-
-        property.Owner = player;
 
         foreach (GameObject tile in tiles)
         {
@@ -431,7 +453,7 @@ public static class GameManager
     private static void GivePlayerUtility(int player, int utilityIndex)
     {
         UtilityTile utility = tiles[utilityIndex].GetComponent<UtilityTile>();
-        utility.Owner = player;
+        utility.SetOwner(player);
 
         bool ownsFullSet = true;
 
@@ -462,8 +484,7 @@ public static class GameManager
     private static void BankruptCurrentPlayer(int debtedPlayer)
     {
         Player bankruptPlayer = players[currPlayer].GetComponent<Player>();
-        bankruptPlayer.bankrupt = true;
-        bankruptPlayer.money = 0;
+        bankruptPlayer.GoBankrupt();
         foreach (GameObject tile in tiles)
         {
             PropertyTile property = tile.GetComponent<PropertyTile>();
@@ -485,6 +506,7 @@ public static class GameManager
             Player player = playerObj.GetComponent<Player>();
             if (numBankrupt == players.Count - 1)
             {
+                ResetSelections();
                 ChangeState(GameState.GameEnd);
             }
         }
@@ -504,12 +526,8 @@ public static class GameManager
         }
     }
 
-    // Used to internally change state when changing selectable components is necessary
-    private static void ChangeState(GameState toState)
+    private static void ResetSelections()
     {
-        // Once game has ended, game state is locked, scene has to be reloaded to play again
-        if (state == GameState.GameEnd) return;
-
         foreach (GameObject tile in tiles)
         {
             tile.GetComponent<BasicTile>().CanSelect = false;
@@ -521,6 +539,13 @@ public static class GameManager
         ComDeck.GetComponent<CommunityDeck>().CanSelect = false;
         ChanceDeck.GetComponent<ChanceDeck>().CanSelect = false;
         skipButton.GetComponent<SpriteRenderer>().enabled = false;
+    }
+
+    // Used to internally change state when changing selectable components is necessary
+    private static void ChangeState(GameState toState)
+    {
+        // Once game has ended, game state is locked, scene has to be reloaded to play again
+        if (state == GameState.GameEnd) return;
 
         switch (toState)
         {
@@ -538,6 +563,12 @@ public static class GameManager
                 }
                 doubles = false;
                 break;
+            case GameState.DrawComCard:
+                ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
+                break;
+            case GameState.DrawChanceCard:
+                ChanceDeck.GetComponent<ChanceDeck>().CanSelect = true;
+                break;
             // These states all require the skip button to be selectable, uses case fallthrough
             case GameState.PokemonCenter:
             case GameState.TeamRocket:
@@ -547,14 +578,14 @@ public static class GameManager
             case GameState.Railroad:
                 skipButton.GetComponent<SpriteRenderer>().enabled = true;
                 break;
-            case GameState.DrawComCard:
-                ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
-                break;
-            case GameState.DrawChanceCard:
-                ChanceDeck.GetComponent<ChanceDeck>().CanSelect = true;
-                break;
         }
         
         state = toState;
+
+        // Pass to AI control handler if current player is AI
+        if (!players[currPlayer].GetComponent<Player>().playerControlled)
+        {
+            aiPlayer.HandleInteraction(state);
+        }
     }
 }

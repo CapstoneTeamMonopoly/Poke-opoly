@@ -28,26 +28,29 @@ public class ChanceDeck : Deck
         {
             case 0:
                 Debug.Log($"Card 0: Send player{player.id} to Go, give 200.");
-                player.money += 200;
-                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[0]));
+                player.ChangeBalance(200);
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerNoLand(players[currPlayer], tiles[0]));
+                DrawOver();
                 break;
             case 1:
                 Debug.Log($"Card 1: Send player {player.id} to tile 24, give 200 if they pass go.");
                 if (player.position > 24)
                 {
-                    player.money += 200;
+                    player.ChangeBalance(200);
                     Debug.Log($"200 awarded.");
                 }
-                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[24]));
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerNoLand(players[currPlayer], tiles[24]));
+                DrawOver();
                 break;
             case 2:
                 Debug.Log($"Card 2: Send player {player.id} to tile 11, give 200 if they pass go.");
                 if (player.position > 11)
                 {
-                    player.money += 200;
+                    player.ChangeBalance(200);
                     Debug.Log($"200 awarded.");
                 }
-                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[11]));
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerNoLand(players[currPlayer], tiles[11]));
+                DrawOver();
                 break;
             case 3:
                 Debug.Log($"Card 3: Send player {player.id} to next Utility, trigger on-land effect.");
@@ -59,7 +62,6 @@ public class ChanceDeck : Deck
                 
                 Debug.Log($"Sent player to tile {target}.");
                 board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[target]));
-                tiles[target].GetComponent<UtilityTile>().OnLand();
                 break;
             case 4:
                 Debug.Log($"Card 4: Send player {player.id} to next railroad, trigger on-land effect.");
@@ -75,15 +77,23 @@ public class ChanceDeck : Deck
 
                 Debug.Log($"Sent player to tile {target}.");
                 board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[target]));
-                tiles[target].GetComponent<RailroadTile>().OnLand();
                 break;
             case 5:
                 Debug.Log($"Card 5: Player {player.id} recieves $50");
-                player.money += 50;
+                player.ChangeBalance(50);
+                DrawOver();
                 break;
             case 6:
                 Debug.Log($"Card 6: Trigger Pokemon Center");
-                tiles[10].GetComponent<PokemonCenterTile>().OnLand();
+                foreach (GameObject tile in tiles)
+                {
+                    PokemonCenterTile tileScript = tile.GetComponent<PokemonCenterTile>();
+                    if (tileScript != null)
+                    {
+                        GameManager.PlayerLand(tileScript.index);
+                        break;
+                    }
+                }
                 break;
             case 7:
                 Debug.Log($"Card 7: Player {player.id} is moved back 3 spaces.");
@@ -91,63 +101,78 @@ public class ChanceDeck : Deck
                 if (target < 0)
                     target += 40;
                 Debug.Log($"Moving player from tile {player.position} to tile {target}");
-                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[target]));
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerNoLand(players[currPlayer], tiles[target]));
+                DrawOver();
                 break;
             case 8:
                 Debug.Log($"Card 8: Trigger Team Rocket");
-                tiles[30].GetComponent<TeamRocketTile>().OnLand();
+                foreach (GameObject tile in tiles)
+                {
+                    TeamRocketTile tileScript = tile.GetComponent<TeamRocketTile>();
+                    if (tileScript != null)
+                    {
+                        GameManager.PlayerLand(tileScript.index);
+                        break;
+                    }
+                }
                 break;
             case 9:
-                // These tile ids refer to properties.
-                int[] properties = {1, 3, 6, 8, 9, 11, 13, 14, 16, 18, 19, 21, 23, 24, 26, 27, 29, 31, 32, 34, 37, 39};
                 int price = 0;
 
                 Debug.Log($"Card 9: Charge player {player.id} based on properties owned.");
-                for(int i = 0; i < properties.Length; i++)
+                foreach (GameObject tile in tiles)
                 {
-                    if (tiles[properties[i]].GetComponent<PropertyTile>().Owner == currPlayer)
+                    PropertyTile property = tile.GetComponent<PropertyTile>();
+                    if (property != null)
                     {
-                        if (tiles[properties[i]].GetComponent<PropertyTile>().Level == 3)
-                            price += 45;
-                        else
-                            price += 10 * tiles[properties[i]].GetComponent<PropertyTile>().Level;
+                        if (tiles[property.index].GetComponent<PropertyTile>().Owner == currPlayer)
+                        {
+                            if (tiles[property.index].GetComponent<PropertyTile>().Level == 3)
+                                price += 45;
+                            else
+                                price += 10 * tiles[property.index].GetComponent<PropertyTile>().Level;
+                        }
                     }
                 }
-                player.money -= price;
+                player.ChangeBalance(-price);
+                DrawOver();
                 break;
             case 10:
                 Debug.Log($"Card 10: Send player {player.id} to tile 5, give 200 if they pass go");
                 if (player.position > 5)
                 {
-                    player.money += 200;
+                    player.ChangeBalance(200);
                     Debug.Log($"200 awarded.");
                 }
-                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[5]));
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerNoLand(players[currPlayer], tiles[5]));
+                DrawOver();
                 break;
             case 11:
                 Debug.Log($"Card 11: Send player {player.id} to tile 39");
-                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[39]));
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerNoLand(players[currPlayer], tiles[39]));
+                DrawOver();
                 break;
             case 12:
                 Debug.Log($"Card 12: Award players other than player {player.id}");
                 if (player.id != 0)
-                    players[0].GetComponent<Player>().money += 50;
-                    Debug.Log($"Awarded 50 to player 0");
+                    players[0].GetComponent<Player>().ChangeBalance(50);
+                Debug.Log($"Awarded 50 to player 0");
                 if (player.id != 1)
-                    players[1].GetComponent<Player>().money += 50;
-                    Debug.Log($"Awarded 50 to player 1");
+                    players[1].GetComponent<Player>().ChangeBalance(50);
+                Debug.Log($"Awarded 50 to player 1");
                 if (player.id != 2)
-                    players[2].GetComponent<Player>().money += 50;
-                    Debug.Log($"Awarded 50 to player 2");
+                    players[2].GetComponent<Player>().ChangeBalance(50);
+                Debug.Log($"Awarded 50 to player 2");
                 if (player.id != 3)
-                    players[3].GetComponent<Player>().money += 50;
-                    Debug.Log($"Awarded 50 to player 3");
+                    players[3].GetComponent<Player>().ChangeBalance(50);
+                Debug.Log($"Awarded 50 to player 3");
+                DrawOver();
                 break;
             case 13:
                 Debug.Log($"Card 13: Player {player.id} recieves 150");
-                player.money += 150;
+                player.ChangeBalance(150);
+                DrawOver();
                 break;
-
         }
     }
 }

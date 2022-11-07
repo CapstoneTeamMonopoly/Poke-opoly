@@ -46,7 +46,7 @@ public class BasicTile : TileObj
     public virtual void OnLand()
     {
         Debug.Log("Landed on a basic tile");
-        GameManager.EndTileRoutine();
+        GameManager.EndActionRoutine();
     }
 
     private void OnMouseDown()

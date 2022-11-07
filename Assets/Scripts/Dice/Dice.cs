@@ -22,8 +22,7 @@ public class Dice : MonoBehaviour {
         return result;
     }
 
-	// Use this for initialization
-	void Start()
+	void Awake()
     {
         diceSelectable = new GameObject("diceSelector", typeof(SpriteRenderer));
         diceSelectable.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Dice/diceSelectable");

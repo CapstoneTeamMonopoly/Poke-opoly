@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PropertyTile : BasicTile
 {
-    public int Owner { get; set; } // Keeps track of the owner
+    public int Owner { get; private set; } // Keeps track of the owner
     public string Type { get; set; } // The type of this tile, tracks owning sets
     public int PurchasePrice { get; set; }  // Price to be paid when purchasing the tile.
     public int BaseLandingPrice { get; set; }  // Price to be paid when landing on the tile.
@@ -30,5 +30,10 @@ public class PropertyTile : BasicTile
         }
     }
 
+    public void SetOwner(int player)
+    {
+        Owner = player;
+        // TODO: Call a GameManager function to do a routine adding tile to player hand
+    }
     // TODO: Render three dots based off of the level to signify the evolution
 }

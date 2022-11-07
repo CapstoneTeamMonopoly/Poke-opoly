@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UtilityTile : BasicTile
 {
-    public int Owner { get; set; }
+    public int Owner { get; private set; }
     public int PurchasePrice { get; set; }
     public bool FullSet { get; set; }
 
@@ -25,5 +25,11 @@ public class UtilityTile : BasicTile
         {
             GameManager.PayUtilityRoutine(index);
         }
+    }
+
+    public void SetOwner(int player)
+    {
+        Owner = player;
+        // TODO: Call a GameManager function to do a routine adding tile to player hand
     }
 }
