@@ -25,7 +25,7 @@ public static class GameManager
 
     static GameManager()
     {
-        currPlayer = -1;
+        currPlayer = 0;
         doubles = false;
         state = GameState.RollDice;
     }
@@ -120,6 +120,7 @@ public static class GameManager
         }
 
         ResetSelections();
+        IncrementTurn();
         ChangeState(GameState.RollDice);
     }
 
@@ -129,9 +130,9 @@ public static class GameManager
         if (skipButton.GetComponent<SpriteRenderer>().enabled)
         {
             ResetSelections();
+            IncrementTurn();
             ChangeState(GameState.RollDice);
         }
-
     }
 
     public static List<GameObject> GetSelectableTiles()
@@ -160,6 +161,7 @@ public static class GameManager
     public static void EndActionRoutine()
     {
         ResetSelections();
+        IncrementTurn();
         ChangeState(GameState.RollDice);
     }
 
@@ -196,6 +198,7 @@ public static class GameManager
                 BankruptCurrentPlayer(tile.Owner);
             }
             ResetSelections();
+            IncrementTurn();
             ChangeState(GameState.RollDice);
         }
         else
@@ -214,6 +217,7 @@ public static class GameManager
             else
             {
                 ResetSelections();
+                IncrementTurn();
                 ChangeState(GameState.RollDice);
             }
         }
@@ -292,6 +296,7 @@ public static class GameManager
         }
 
         ResetSelections();
+        IncrementTurn();
         ChangeState(GameState.RollDice);
     }
 
@@ -497,24 +502,33 @@ public static class GameManager
                 }
             }
         }
-        players[currPlayer].GetComponent<Player>().DestroyPlayer();
+        players[currPlayer].GetComponent<Player>().HidePlayer();
         // TODO: check if only 1 player is left and finish the game if so
         int numBankrupt = 0;
 
         foreach (GameObject playerObj in players)
         {
             Player player = playerObj.GetComponent<Player>();
-            if (numBankrupt == players.Count - 1)
-            {
-                ResetSelections();
-                ChangeState(GameState.GameEnd);
-            }
+            if (player.bankrupt) numBankrupt += 1;
+        }
+
+        if (numBankrupt == players.Count - 1)
+        {
+            Debug.Log($"Game Ends! Player {debtedPlayer} wins.");
+            ResetSelections();
+            ChangeState(GameState.GameEnd);
         }
     }
 
     // Used for incrementing turn, recursion to skip bankrupted players
     private static void IncrementTurn()
     {
+        if (doubles)
+        {
+            doubles = false;
+            return;
+        }
+
         currPlayer += 1;
         if (currPlayer >= 4)
         {
@@ -523,6 +537,10 @@ public static class GameManager
         if (players[currPlayer].GetComponent<Player>().bankrupt)
         {
             IncrementTurn();
+        }
+        else
+        {
+            Debug.Log($"Player {currPlayer} turn");
         }
     }
 
@@ -557,11 +575,6 @@ public static class GameManager
                 {
                     die.GetComponent<Dice>().actionable = true;
                 }
-                if (!doubles)
-                {
-                    IncrementTurn();
-                }
-                doubles = false;
                 break;
             case GameState.DrawComCard:
                 ComDeck.GetComponent<CommunityDeck>().CanSelect = true;

@@ -25,12 +25,11 @@ public class Player : MonoBehaviour
 		bankrupt = false;
 		money = 1500;
 		position = 0;
-		playerControlled = false;
     }
 
-	public void DestroyPlayer()
+	public void HidePlayer()
     {
-		Destroy(GetComponent<SpriteRenderer>());
+		GetComponent<SpriteRenderer>().enabled = false;
     }
 
 	public void InstantiatePlayerPosition(GameObject tile)

@@ -41,6 +41,7 @@ public class Dice : MonoBehaviour {
 
     void Update()
     {
+        diceSelectable.transform.position = transform.position + new Vector3(0, 0, -1);
         diceSelectable.GetComponent<SpriteRenderer>().enabled = actionable;
     }
 	

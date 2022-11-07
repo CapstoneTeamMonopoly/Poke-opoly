@@ -70,6 +70,9 @@ public class Board : MonoBehaviour
             playerObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Board/player_{i}");
             playerObj.GetComponent<Player>().InstantiatePlayerPosition(tiles[0]);
             players.Add(playerObj);
+            // TODO: Read player controlled values from previous scene
+            playerObj.GetComponent<Player>().playerControlled = false;
+            Debug.Log($"Player {i} controlled by player: {playerObj.GetComponent<Player>().playerControlled}");
         }
     }
 
