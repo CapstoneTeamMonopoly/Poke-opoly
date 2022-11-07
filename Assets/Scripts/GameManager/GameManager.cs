@@ -360,6 +360,7 @@ public static class GameManager
 
     public static void DrawComCard()
     {
+        ResetSelections();
         ComDeck.GetComponent<CommunityDeck>().Effect(ComDeck.GetComponent<CommunityDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
     }
 
@@ -372,6 +373,7 @@ public static class GameManager
 
     public static void DrawChanceCard()
     {
+        ResetSelections();
         ChanceDeck.GetComponent<ChanceDeck>().Effect(ChanceDeck.GetComponent<ChanceDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
     }
 
