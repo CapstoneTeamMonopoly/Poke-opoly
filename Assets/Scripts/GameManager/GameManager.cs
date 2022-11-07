@@ -326,7 +326,6 @@ public static class GameManager
      * DECK FUNCTIONS
      */
 
-
     public static void CommunityRoutine()
     {
         ChangeState(GameState.DrawComCard);
@@ -347,6 +346,15 @@ public static class GameManager
     public static void DrawChanceCard()
     {
         ChanceDeck.GetComponent<ChanceDeck>().Effect(ComDeck.GetComponent<ChanceDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
+    }
+
+    /*
+     *  PUBLIC HELPER FUNCTIONS
+     */
+
+    public static GameObject GetTile(int index)
+    {
+        return tiles[index];
     }
 
     /*

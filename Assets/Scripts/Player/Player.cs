@@ -97,9 +97,32 @@ public class Player : MonoBehaviour
 				break;
         }
 
-		transform.position = dest.transform.position + offset;
+		List<GameObject> waypoints = new List<GameObject>();
+
+		for (int i = position; i != tile.index; i++)
+        {
+			i %= 40; // Wraps around
+
+			if (i % 10 == 0) waypoints.Add(GameManager.GetTile(i));
+        }
+
+
+		waypoints.Add(dest);
 		position = tile.index;
-		yield return null;
+
+		foreach (GameObject waypoint in waypoints)
+        {
+			yield return MoveToPosition(waypoint.transform.position + offset);
+        }
+    }
+
+	private IEnumerator MoveToPosition(Vector3 dest)
+    {
+		while (gameObject.transform.position != dest)
+        {
+			gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, dest, 0.05f);
+			yield return null;
+        }
     }
 };
 
