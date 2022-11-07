@@ -25,6 +25,5 @@ public class EventHandler : MonoBehaviour
     {
         MoveEvent newEvent = new MoveEvent(player, dest);
         yield return StartCoroutine(newEvent.RunEvent());
-        
     }
 }

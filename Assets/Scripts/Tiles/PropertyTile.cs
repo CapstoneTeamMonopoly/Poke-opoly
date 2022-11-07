@@ -14,7 +14,7 @@ public class PropertyTile : BasicTile
     public PropertyTile()
     {
         Owner = -1; // Owner is -1 if no player owns
-        Level = 0; // By default evolution 1 (Level 0-3 is valid, 0 for when not owned)
+        Level = 1; // By default evolution 1 (Level 1-3 is valid)
     }
 
     // Called when a player lands on this tile, starts tile functionality. At the end of each OnLand() function, a GameManager routine must be called.
@@ -26,7 +26,7 @@ public class PropertyTile : BasicTile
         } 
         else
         {
-            GameManager.PayOnLandRoutine(index);
+            GameManager.PayPropertyRoutine(index);
         }
     }
 

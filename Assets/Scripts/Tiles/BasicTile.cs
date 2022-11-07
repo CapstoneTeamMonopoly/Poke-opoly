@@ -32,7 +32,7 @@ public class BasicTile : TileObj
         tileInfo = new GameObject($"tileInfo-{index}", typeof(SpriteRenderer));
         tileInfo.GetComponent<SpriteRenderer>().sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
 
-        tileInfo.transform.localScale = transform.localScale * 5;
+        tileInfo.transform.localScale = transform.localScale * 4;
         tileInfo.transform.position = new Vector3(0, 0, -5);
     }
 
