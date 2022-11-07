@@ -4,22 +4,20 @@ using UnityEngine;
 
 public class CommunityDeck : Deck
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
+        base.Start();
         numOptions = 17; // Number of cards in the deck!
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        
+        base.Update();
     }
 
-    void OnMouseDown()
+    private void OnMouseDown()
     {
-        if (CanSelect)
-            GameManager.DrawComCard();
+        if (CanSelect) GameManager.DrawComCard();
     }
 
     public void Effect(int card, int currPlayer, ref List<GameObject> players, ref List<GameObject> tiles, ref GameObject board, ref EventHandler handler)
@@ -46,11 +44,11 @@ public class CommunityDeck : Deck
                 break;
             case 4:
                 Debug.Log($"Card 4: Trigger Pokemon Center");
-                tiles[10].GetComponent<BasicTile>().OnLand();
+                tiles[10].GetComponent<PokemonCenterTile>().OnLand();
                 break;
             case 5:
                 Debug.Log($"Card 5: Trigger Team Rocket");
-                tiles[30].GetComponent<BasicTile>().OnLand();
+                tiles[30].GetComponent<TeamRocketTile>().OnLand();
                 break;
             case 6:
                 Debug.Log($"Card 6: Player {player.id} takes 50 from each other player");

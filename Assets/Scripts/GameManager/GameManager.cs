@@ -335,17 +335,19 @@ public static class GameManager
     public static void DrawComCard()
     {
         ComDeck.GetComponent<CommunityDeck>().Effect(ComDeck.GetComponent<CommunityDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
+        ChangeState(GameState.RollDice);
     }
 
     public static void ChanceRoutine()
     {
         ChangeState(GameState.DrawChanceCard);
-        ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
+        ChanceDeck.GetComponent<ChanceDeck>().CanSelect = true;
     }
 
     public static void DrawChanceCard()
     {
-        ChanceDeck.GetComponent<ChanceDeck>().Effect(ComDeck.GetComponent<ChanceDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
+        ChanceDeck.GetComponent<ChanceDeck>().Effect(ChanceDeck.GetComponent<ChanceDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
+        ChangeState(GameState.RollDice);
     }
 
     /*

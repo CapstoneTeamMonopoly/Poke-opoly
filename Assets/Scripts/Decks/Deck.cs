@@ -8,24 +8,24 @@ public class Deck : MonoBehaviour
     private List<int> cards;
     public int numOptions;
 
+    private GameObject deckSelectable;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
+        deckSelectable = new GameObject($"deckSelector", typeof(SpriteRenderer));
+        deckSelectable.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/tileSelectable");
+
+        deckSelectable.transform.localScale = transform.localScale;
+        deckSelectable.transform.position = transform.position + new Vector3(0, 0, -1);
+
         CanSelect = false;
         cards = new List<int>();
         Shuffle();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        
-    }
-
-    void OnMouseDown()
-    {
-        Debug.Log($"How'd you get here?");
+        deckSelectable.GetComponent<SpriteRenderer>().enabled = CanSelect;
     }
 
     private void Shuffle()

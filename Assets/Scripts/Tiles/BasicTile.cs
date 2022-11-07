@@ -15,7 +15,6 @@ public class BasicTile : TileObj
     public int index { get; set; }
 
     private GameObject tileSelectable;
-    private bool selectShown;
 
     private GameObject tileInfo;
     private bool hovering;

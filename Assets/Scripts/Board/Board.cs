@@ -7,8 +7,8 @@ public class Board : MonoBehaviour
     private List<GameObject> tiles;
     private List<GameObject> players;
     private List<GameObject> dice;
-    private GameObject CommunityDeck;
-    private GameObject ChanceDeck;
+    private GameObject communityDeck;
+    private GameObject chanceDeck;
     private const int NUM_TILES = 40;
 
     // Start is called before the first frame update
@@ -28,7 +28,7 @@ public class Board : MonoBehaviour
         InstantiateDecks();
 
         // Initiate game manager
-        GameManager.InitGameObjects(gameObject, ref(players), ref(tiles), ref(dice), ref(CommunityDeck), ref(ChanceDeck));
+        GameManager.InitGameObjects(gameObject, ref(players), ref(tiles), ref(dice), ref(communityDeck), ref(chanceDeck));
     }
 
     private void InstantiateDice()
@@ -51,8 +51,13 @@ public class Board : MonoBehaviour
 
     private void InstantiateDecks()
     {
-        CommunityDeck = new GameObject("deck-0", typeof(BoxCollider), typeof(SpriteRenderer), typeof(CommunityDeck));
-        ChanceDeck = new GameObject("deck-1", typeof(BoxCollider), typeof(SpriteRenderer), typeof(ChanceDeck));
+        communityDeck = new GameObject("deck-0", typeof(BoxCollider), typeof(SpriteRenderer), typeof(CommunityDeck));
+        chanceDeck = new GameObject("deck-1", typeof(BoxCollider), typeof(SpriteRenderer), typeof(ChanceDeck));
+        communityDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        chanceDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        communityDeck.transform.position = new Vector3(-3f, -3f, -1f);
+        chanceDeck.transform.position = new Vector3(3f, 3f, -1f);
+
     }
 
     private void InstantiatePlayers()

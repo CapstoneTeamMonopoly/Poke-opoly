@@ -4,22 +4,20 @@ using UnityEngine;
 
 public class ChanceDeck : Deck
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
+        base.Start();
         numOptions = 14; // Number of cards in the deck!
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Update() 
     {
-        
+        base.Update();
     }
 
-    void OnMouseDown()
+    private void OnMouseDown()
     {
-        if (CanSelect)
-            GameManager.DrawChanceCard();
+        if (CanSelect) GameManager.DrawChanceCard();
     }
 
     public void Effect(int card, int currPlayer, ref List<GameObject> players, ref List<GameObject> tiles, ref GameObject board, ref EventHandler handler)
@@ -31,7 +29,7 @@ public class ChanceDeck : Deck
             case 0:
                 Debug.Log($"Card 0: Send player{player.id} to Go, give 200.");
                 player.money += 200;
-                board.GetComponent<Board>().StartCoroutine(handler.GetComponent<EventHandler>().MovePlayerTo(players[currPlayer], tiles[0]));
+                board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[0]));
                 break;
             case 1:
                 Debug.Log($"Card 1: Send player {player.id} to tile 24, give 200 if they pass go.");
@@ -61,7 +59,7 @@ public class ChanceDeck : Deck
                 
                 Debug.Log($"Sent player to tile {target}.");
                 board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[target]));
-                tiles[target].GetComponent<BasicTile>().OnLand();
+                tiles[target].GetComponent<UtilityTile>().OnLand();
                 break;
             case 4:
                 Debug.Log($"Card 4: Send player {player.id} to next railroad, trigger on-land effect.");
@@ -77,7 +75,7 @@ public class ChanceDeck : Deck
 
                 Debug.Log($"Sent player to tile {target}.");
                 board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[target]));
-                tiles[target].GetComponent<BasicTile>().OnLand();
+                tiles[target].GetComponent<RailroadTile>().OnLand();
                 break;
             case 5:
                 Debug.Log($"Card 5: Player {player.id} recieves $50");
@@ -85,7 +83,7 @@ public class ChanceDeck : Deck
                 break;
             case 6:
                 Debug.Log($"Card 6: Trigger Pokemon Center");
-                tiles[10].GetComponent<BasicTile>().OnLand();
+                tiles[10].GetComponent<PokemonCenterTile>().OnLand();
                 break;
             case 7:
                 Debug.Log($"Card 7: Player {player.id} is moved back 3 spaces.");
@@ -97,7 +95,7 @@ public class ChanceDeck : Deck
                 break;
             case 8:
                 Debug.Log($"Card 8: Trigger Team Rocket");
-                tiles[30].GetComponent<BasicTile>().OnLand();
+                tiles[30].GetComponent<TeamRocketTile>().OnLand();
                 break;
             case 9:
                 // These tile ids refer to properties.

@@ -99,12 +99,14 @@ public class Player : MonoBehaviour
 
 		List<GameObject> waypoints = new List<GameObject>();
 
-		for (int i = position; i != tile.index; i++)
-        {
+		int i = position;
+		while (i != tile.index)
+		{
+			i++;
 			i %= 40; // Wraps around
 
 			if (i % 10 == 0) waypoints.Add(GameManager.GetTile(i));
-        }
+		}
 
 
 		waypoints.Add(dest);
@@ -120,7 +122,7 @@ public class Player : MonoBehaviour
     {
 		while (gameObject.transform.position != dest)
         {
-			gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, dest, 0.05f);
+			gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, dest, 20 * Time.deltaTime);
 			yield return null;
         }
     }
