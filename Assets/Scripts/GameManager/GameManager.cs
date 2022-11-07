@@ -91,7 +91,7 @@ public static class GameManager
                 PropertyTile upgradedTile = tiles[index].GetComponent<PropertyTile>();
                 Debug.Log($"Upgraded tile {index}, level: {upgradedTile.Level + 1}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - upgradedTile.PurchasePrice}"); // TODO: Delete once hands implemented
 
-                upgradedTile.Level += 1;
+                upgradedTile.Evolve();
                 players[currPlayer].GetComponent<Player>().ChangeBalance(-upgradedTile.PurchasePrice);
                 break;
             case GameState.Railroad:
@@ -111,7 +111,7 @@ public static class GameManager
                 PropertyTile freeUpgradedTile = tiles[index].GetComponent<PropertyTile>();
                 Debug.Log($"Upgraded tile {index} for free. Property goes from level {freeUpgradedTile.Level} to level {freeUpgradedTile.Level + 1}"); // TODO: Delete once hands implemented
 
-                freeUpgradedTile.Level += 1;
+                freeUpgradedTile.Evolve();
                 break;
             case GameState.TeamRocket:
                 Debug.Log($"Stole tile {index}. Property goes from player {tiles[index].GetComponent<PropertyTile>().Owner} to player {currPlayer}"); // TODO: Delete once hands implemented
@@ -173,7 +173,7 @@ public static class GameManager
         PropertyTile tile = tiles[index].GetComponent<PropertyTile>();
         if (players[currPlayer].GetComponent<Player>().money >= tile.PurchasePrice * tile.Level)
         {
-            tiles[index].GetComponent<PropertyTile>().CanSelect = true;
+            tiles[index].GetComponent<PropertyTile>().SetCanSelect(true);
         }
         ChangeState(GameState.BuyProperty);
     }
@@ -210,7 +210,7 @@ public static class GameManager
                 // Check if the tile upgrade costs more money than the player has and only allow selection if it doesn't
                 if (player.money >= tile.PurchasePrice)
                 {
-                    tile.CanSelect = true;
+                    tile.SetCanSelect(true);
                 }
                 ChangeState(GameState.UpgradeProperty);
             }
@@ -241,7 +241,7 @@ public static class GameManager
                 if (price < 0) price += 40;
                 price *= 8;
 
-                if (railTile.index != railroadIndex && price <= player.money) railTile.CanSelect = true;
+                if (railTile.index != railroadIndex && price <= player.money) railTile.SetCanSelect(true);
             }
         }
         ChangeState(GameState.Railroad);
@@ -259,7 +259,7 @@ public static class GameManager
                 // If the tile is owned but not by the current player, it is eligible to steal
                 if (property.Owner != currPlayer && property.Owner != -1)
                 {
-                    property.CanSelect = true;
+                    property.SetCanSelect(true);
                 }
             }
         }
@@ -278,7 +278,7 @@ public static class GameManager
                 // If the tile is owned by the current player and not max level, it is eligible for upgrade
                 if (property.Owner == currPlayer && property.Level < 3)
                 {
-                    property.CanSelect = true;
+                    property.SetCanSelect(true);
                 }
             }
         }
@@ -308,7 +308,7 @@ public static class GameManager
         UtilityTile tile = tiles[utilityIndex].GetComponent<UtilityTile>();
         if (players[currPlayer].GetComponent<Player>().money >= tile.PurchasePrice)
         {
-            tiles[utilityIndex].GetComponent<UtilityTile>().CanSelect = true;
+            tiles[utilityIndex].GetComponent<UtilityTile>().SetCanSelect(true);
         }
         ChangeState(GameState.BuyUtility);
     }
@@ -354,7 +354,7 @@ public static class GameManager
     public static void CommunityRoutine()
     {
         ResetSelections();
-        ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
+        ComDeck.GetComponent<CommunityDeck>().SetCanSelect(true);
         ChangeState(GameState.DrawComCard);
     }
 
@@ -366,7 +366,7 @@ public static class GameManager
     public static void ChanceRoutine()
     {
         ResetSelections();
-        ChanceDeck.GetComponent<ChanceDeck>().CanSelect = true;
+        ChanceDeck.GetComponent<ChanceDeck>().SetCanSelect(true);
         ChangeState(GameState.DrawChanceCard);
     }
 
@@ -548,14 +548,14 @@ public static class GameManager
     {
         foreach (GameObject tile in tiles)
         {
-            tile.GetComponent<BasicTile>().CanSelect = false;
+            tile.GetComponent<BasicTile>().SetCanSelect(false);
         }
         foreach (GameObject die in dice)
         {
             die.GetComponent<Dice>().actionable = false;
         }
-        ComDeck.GetComponent<CommunityDeck>().CanSelect = false;
-        ChanceDeck.GetComponent<ChanceDeck>().CanSelect = false;
+        ComDeck.GetComponent<CommunityDeck>().SetCanSelect(false);
+        ChanceDeck.GetComponent<ChanceDeck>().SetCanSelect(false);
         skipButton.GetComponent<SpriteRenderer>().enabled = false;
     }
 
@@ -577,10 +577,10 @@ public static class GameManager
                 }
                 break;
             case GameState.DrawComCard:
-                ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
+                ComDeck.GetComponent<CommunityDeck>().SetCanSelect(true);
                 break;
             case GameState.DrawChanceCard:
-                ChanceDeck.GetComponent<ChanceDeck>().CanSelect = true;
+                ChanceDeck.GetComponent<ChanceDeck>().SetCanSelect(true);
                 break;
             // These states all require the skip button to be selectable, uses case fallthrough
             case GameState.PokemonCenter:

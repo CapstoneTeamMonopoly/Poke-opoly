@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class Deck : MonoBehaviour
 {
-    public bool CanSelect {get; set;}
+    public bool CanSelect {get; private set;}
     private List<int> cards;
     public int numOptions;
 
     private GameObject deckSelectable;
+
+    public void SetCanSelect(bool val)
+    {
+        CanSelect = val;
+    }
 
     public void Start()
     {

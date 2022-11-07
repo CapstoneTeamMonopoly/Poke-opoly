@@ -11,7 +11,7 @@ public class BasicTile : TileObj
      */
 
     // CanSelect determines whether a tile is selectable as a button by the player
-    public bool CanSelect { get; set; }
+    public bool CanSelect { get; private set; }
     public int index { get; set; }
 
     private GameObject tileSelectable;
@@ -33,6 +33,12 @@ public class BasicTile : TileObj
 
         tileInfo.transform.localScale = transform.localScale * 4;
         tileInfo.transform.position = new Vector3(0, 0, -5);
+    }
+
+    public void SetCanSelect(bool val)
+    {
+        CanSelect = val;
+        tileInfo.GetComponent<SpriteRenderer>().sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
     }
 
     // Override Update() to show tile info when hovering
