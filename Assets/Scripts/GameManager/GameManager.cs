@@ -280,7 +280,7 @@ public static class GameManager
 
     public static void DrawComCard()
     {
-        ComDeck.Effect(ComDeck.DrawCard(), currPlayer, players, tiles);
+        ComDeck.GetComponent<CommunityDeck>().Effect(ComDeck.GetComponent<CommunityDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
     }
 
     public static void ChanceRoutine()
@@ -291,7 +291,7 @@ public static class GameManager
 
     public static void DrawChanceCard()
     {
-        ChanceDeck.Effect(ComDeck.DrawCard(), currPlayer, ref players, ref tiles);
+        ChanceDeck.GetComponent<ChanceDeck>().Effect(ComDeck.GetComponent<ChanceDeck>().DrawCard(), currPlayer, ref players, ref tiles, ref board, ref handler);
     }
 
     /*
@@ -436,10 +436,10 @@ public static class GameManager
                 skipButton.GetComponent<SpriteRenderer>().enabled = true;
                 break;
             case GameState.DrawComCard:
-                ComDeck.GetComponent<CommunityDeck>.CanSelect = true;
+                ComDeck.GetComponent<CommunityDeck>().CanSelect = true;
                 break;
             case GameState.DrawChanceCard:
-                ChanceDeck.GetComponent<ChanceDeck>.CanSelect = true;
+                ChanceDeck.GetComponent<ChanceDeck>().CanSelect = true;
                 break;
         }
         state = toState;

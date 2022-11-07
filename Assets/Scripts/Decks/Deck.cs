@@ -6,7 +6,7 @@ public class Deck : MonoBehaviour
 {
     public bool CanSelect {get; set;}
     private List<int> cards;
-    private int numOptions;
+    public int numOptions;
 
 
     // Start is called before the first frame update
@@ -37,7 +37,7 @@ public class Deck : MonoBehaviour
 
         while(values.Count > 0)
         {
-            int i = Random.Range(0, values.size());
+            int i = Random.Range(0, values.Count);
             cards.Add(values[i]);
             values.RemoveAt(i);
         }
