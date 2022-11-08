@@ -18,7 +18,7 @@ public class Deck : MonoBehaviour
     public void Start()
     {
         deckSelectable = new GameObject($"deckSelector", typeof(SpriteRenderer));
-        deckSelectable.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/tileSelectable");
+        deckSelectable.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Decks/deckSelectable");
 
         deckSelectable.transform.localScale = transform.localScale;
         deckSelectable.transform.position = transform.position + new Vector3(0, 0, -1);

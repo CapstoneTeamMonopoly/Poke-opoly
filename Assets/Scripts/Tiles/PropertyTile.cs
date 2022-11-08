@@ -12,11 +12,20 @@ public class PropertyTile : BasicTile
     public bool FullSet { get; set; }  // Keeps track of whether 1 player owns all of this color
 
     private string spritePath;
+    private GameObject tileOwner;
 
     public PropertyTile()
     {
         Owner = -1; // Owner is -1 if no player owns
         Level = 1; // By default evolution 1 (Level 1-3 is valid)
+    }
+
+    public override void Start()
+    {
+        base.Start();
+
+        tileOwner = new GameObject($"owner-{index}", typeof(SpriteRenderer));
+        tileOwner.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     public void SetBaseSprite(string path)
@@ -47,7 +56,17 @@ public class PropertyTile : BasicTile
     public void SetOwner(int player)
     {
         Owner = player;
-        // TODO: Call a GameManager function to do a routine adding tile to player hand
+
+        if (Owner == -1)
+        {
+            tileOwner.GetComponent<SpriteRenderer>().enabled = false;
+        }
+        else
+        {
+            tileOwner.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Board/p{Owner}-owned");
+            tileOwner.GetComponent<SpriteRenderer>().enabled = true;
+            tileOwner.transform.position = gameObject.transform.position + new Vector3(0, 0, -0.5f);
+            tileOwner.transform.localScale = gameObject.transform.localScale;
+        }
     }
-    // TODO: Render three dots based off of the level to signify the evolution
 }

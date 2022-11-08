@@ -503,9 +503,18 @@ public static class GameManager
                     Debug.Log($"Transfered property ${property.index} from player {currPlayer} to {debtedPlayer}");
                 }
             }
+            UtilityTile utility = tile.GetComponent<UtilityTile>();
+            if (utility != null) // If tile is actually a property
+            {
+                if (utility.Owner == currPlayer)
+                {
+                    GivePlayerUtility(debtedPlayer, utility.index);
+                    Debug.Log($"Transfered utilit ${utility.index} from player {currPlayer} to {debtedPlayer}");
+                }
+            }
         }
         players[currPlayer].GetComponent<Player>().HidePlayer();
-        // TODO: check if only 1 player is left and finish the game if so
+
         int numBankrupt = 0;
 
         foreach (GameObject playerObj in players)

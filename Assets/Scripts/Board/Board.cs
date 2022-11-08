@@ -52,8 +52,8 @@ public class Board : MonoBehaviour
     {
         communityDeck = new GameObject("deck-0", typeof(BoxCollider), typeof(SpriteRenderer), typeof(CommunityDeck));
         chanceDeck = new GameObject("deck-1", typeof(BoxCollider), typeof(SpriteRenderer), typeof(ChanceDeck));
-        communityDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        chanceDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        communityDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Decks/CommunityChest");
+        chanceDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Decks/Chance");
         communityDeck.transform.position = new Vector3(-3f, -3f, -1f);
         chanceDeck.transform.position = new Vector3(3f, 3f, -1f);
 
@@ -71,7 +71,7 @@ public class Board : MonoBehaviour
             playerObj.GetComponent<Player>().InstantiatePlayerPosition(tiles[0]);
             players.Add(playerObj);
             // TODO: Read player controlled values from previous scene
-            playerObj.GetComponent<Player>().playerControlled = false;
+            playerObj.GetComponent<Player>().playerControlled = true;
             Debug.Log($"Player {i} controlled by player: {playerObj.GetComponent<Player>().playerControlled}");
         }
     }
@@ -130,7 +130,7 @@ public class Board : MonoBehaviour
         tiles[6].GetComponent<PropertyTile>().PurchasePrice = 100;
         tiles[6].GetComponent<PropertyTile>().BaseLandingPrice = 6;
         tiles[6].GetComponent<PropertyTile>().Type = "Cyan";
-        tiles[6].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[6].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/cyan1");
 
 
         GameObject tileObj7 = new GameObject("tile-7", typeof(BoxCollider), typeof(ChanceTile), typeof(SpriteRenderer));
@@ -145,7 +145,7 @@ public class Board : MonoBehaviour
         tiles[8].GetComponent<PropertyTile>().PurchasePrice = 100;
         tiles[8].GetComponent<PropertyTile>().BaseLandingPrice = 6;
         tiles[8].GetComponent<PropertyTile>().Type = "Cyan";
-        tiles[8].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[8].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/cyan2");
 
 
         GameObject tileObj9 = new GameObject("tile-9", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -170,7 +170,7 @@ public class Board : MonoBehaviour
         tiles[11].GetComponent<PropertyTile>().PurchasePrice = 140;
         tiles[11].GetComponent<PropertyTile>().BaseLandingPrice = 10;
         tiles[11].GetComponent<PropertyTile>().Type = "Purple";
-        tiles[11].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[11].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/purple1");
 
 
         GameObject tileObj12 = new GameObject("tile-12", typeof(BoxCollider), typeof(UtilityTile), typeof(SpriteRenderer));
@@ -186,7 +186,7 @@ public class Board : MonoBehaviour
         tiles[13].GetComponent<PropertyTile>().PurchasePrice = 140;
         tiles[13].GetComponent<PropertyTile>().BaseLandingPrice = 10;
         tiles[13].GetComponent<PropertyTile>().Type = "Purple";
-        tiles[13].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[13].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/purple2");
 
 
         GameObject tileObj14 = new GameObject("tile-14", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -195,7 +195,7 @@ public class Board : MonoBehaviour
         tiles[14].GetComponent<PropertyTile>().PurchasePrice = 160;
         tiles[14].GetComponent<PropertyTile>().BaseLandingPrice = 12;
         tiles[14].GetComponent<PropertyTile>().Type = "Purple";
-        tiles[14].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[14].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/purple3");
 
 
         GameObject tileObj15 = new GameObject("tile-15", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
@@ -210,7 +210,7 @@ public class Board : MonoBehaviour
         tiles[16].GetComponent<PropertyTile>().PurchasePrice = 180;
         tiles[16].GetComponent<PropertyTile>().BaseLandingPrice = 14;
         tiles[16].GetComponent<PropertyTile>().Type = "Orange";
-        tiles[16].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[16].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/orange1");
 
 
         GameObject tileObj17 = new GameObject("tile-17", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
@@ -225,7 +225,7 @@ public class Board : MonoBehaviour
         tiles[18].GetComponent<PropertyTile>().PurchasePrice = 180;
         tiles[18].GetComponent<PropertyTile>().BaseLandingPrice = 14;
         tiles[18].GetComponent<PropertyTile>().Type = "Orange";
-        tiles[18].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[18].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/orange2");
 
 
         GameObject tileObj19 = new GameObject("tile-19", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -234,7 +234,7 @@ public class Board : MonoBehaviour
         tiles[19].GetComponent<PropertyTile>().PurchasePrice = 200;
         tiles[19].GetComponent<PropertyTile>().BaseLandingPrice = 16;
         tiles[19].GetComponent<PropertyTile>().Type = "Orange";
-        tiles[19].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[19].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/orange3");
 
 
         // Next corner!
@@ -250,7 +250,7 @@ public class Board : MonoBehaviour
         tiles[21].GetComponent<PropertyTile>().PurchasePrice = 220;
         tiles[21].GetComponent<PropertyTile>().BaseLandingPrice = 18;
         tiles[21].GetComponent<PropertyTile>().Type = "Red";
-        tiles[21].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[21].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/red1");
 
 
         GameObject tileObj22 = new GameObject("tile-22", typeof(BoxCollider), typeof(ChanceTile), typeof(SpriteRenderer));
@@ -265,7 +265,7 @@ public class Board : MonoBehaviour
         tiles[23].GetComponent<PropertyTile>().PurchasePrice = 220;
         tiles[23].GetComponent<PropertyTile>().BaseLandingPrice = 18;
         tiles[23].GetComponent<PropertyTile>().Type = "Red";
-        tiles[23].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[23].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/red2");
 
 
         GameObject tileObj24 = new GameObject("tile-24", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -274,7 +274,7 @@ public class Board : MonoBehaviour
         tiles[24].GetComponent<PropertyTile>().PurchasePrice = 220;
         tiles[24].GetComponent<PropertyTile>().BaseLandingPrice = 18;
         tiles[24].GetComponent<PropertyTile>().Type = "Red";
-        tiles[24].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[24].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/red3");
 
 
         GameObject tileObj25 = new GameObject("tile-25", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
@@ -289,7 +289,7 @@ public class Board : MonoBehaviour
         tiles[26].GetComponent<PropertyTile>().PurchasePrice = 240;
         tiles[26].GetComponent<PropertyTile>().BaseLandingPrice = 20;
         tiles[26].GetComponent<PropertyTile>().Type = "Yellow";
-        tiles[26].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[26].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/yellow1");
 
 
         GameObject tileObj27 = new GameObject("tile-27", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -298,7 +298,7 @@ public class Board : MonoBehaviour
         tiles[27].GetComponent<PropertyTile>().PurchasePrice = 260;
         tiles[27].GetComponent<PropertyTile>().BaseLandingPrice = 22;
         tiles[27].GetComponent<PropertyTile>().Type = "Yellow";
-        tiles[27].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[27].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/yellow2");
 
 
         GameObject tileObj28 = new GameObject("tile-28", typeof(BoxCollider), typeof(UtilityTile), typeof(SpriteRenderer));
@@ -314,7 +314,7 @@ public class Board : MonoBehaviour
         tiles[29].GetComponent<PropertyTile>().PurchasePrice = 280;
         tiles[29].GetComponent<PropertyTile>().BaseLandingPrice = 24;
         tiles[29].GetComponent<PropertyTile>().Type = "Yellow";
-        tiles[29].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[29].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/yellow3");
 
 
         // Last Corner!
@@ -330,7 +330,7 @@ public class Board : MonoBehaviour
         tiles[31].GetComponent<PropertyTile>().PurchasePrice = 300;
         tiles[31].GetComponent<PropertyTile>().BaseLandingPrice = 26;
         tiles[31].GetComponent<PropertyTile>().Type = "Green";
-        tiles[31].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[31].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/green1");
 
 
         GameObject tileObj32 = new GameObject("tile-32", typeof(BoxCollider), typeof(PropertyTile), typeof(SpriteRenderer));
@@ -339,7 +339,7 @@ public class Board : MonoBehaviour
         tiles[32].GetComponent<PropertyTile>().PurchasePrice = 300;
         tiles[32].GetComponent<PropertyTile>().BaseLandingPrice = 26;
         tiles[32].GetComponent<PropertyTile>().Type = "Green";
-        tiles[32].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[32].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/green2");
 
 
         GameObject tileObj33 = new GameObject("tile-33", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
@@ -354,7 +354,7 @@ public class Board : MonoBehaviour
         tiles[34].GetComponent<PropertyTile>().PurchasePrice = 320;
         tiles[34].GetComponent<PropertyTile>().BaseLandingPrice = 28;
         tiles[34].GetComponent<PropertyTile>().Type = "Green";
-        tiles[34].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[34].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/green3");
 
 
         GameObject tileObj35 = new GameObject("tile-35", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
@@ -375,7 +375,7 @@ public class Board : MonoBehaviour
         tiles[37].GetComponent<PropertyTile>().PurchasePrice = 350;
         tiles[37].GetComponent<PropertyTile>().BaseLandingPrice = 35;
         tiles[37].GetComponent<PropertyTile>().Type = "Blue";
-        tiles[37].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[37].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/blue1");
 
 
         GameObject tileObj38 = new GameObject("tile-38", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
@@ -391,7 +391,7 @@ public class Board : MonoBehaviour
         tiles[39].GetComponent<PropertyTile>().PurchasePrice = 400;
         tiles[39].GetComponent<PropertyTile>().BaseLandingPrice = 50;
         tiles[39].GetComponent<PropertyTile>().Type = "Blue";
-        tiles[39].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/default1");
+        tiles[39].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/blue2");
     }
 
     private void AutoplaceTiles()
