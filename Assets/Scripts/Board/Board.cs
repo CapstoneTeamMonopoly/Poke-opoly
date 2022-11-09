@@ -606,54 +606,61 @@ public class Board : MonoBehaviour
 
     }
 
-    public void updateMoney()
+    public IEnumerator UpdateMoney(Player p, int src, int dest)
     {
-        Player p1 = players[0].GetComponent<Player>();
-        Player p2 = players[1].GetComponent<Player>();
-        Player p3 = players[2].GetComponent<Player>();
-        Player p4 = players[3].GetComponent<Player>();
-    
-        int p1Thousands = p1.money / 1000; // 1500 / 1000 = 1
-        int p1Hundreds = (p1.money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
-        int p1Tens = (p1.money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
-        int p1Ones = p1.money % 10; // 1500 % 10 = 150 with remainder 0 = 0
+        Debug.Log("called");
+        List<SpriteRenderer> digits = new List<SpriteRenderer>();
+        int bRange = 0;
+        int tRange = 0;
+        switch (p.id)
+        {
+            case 0:
+                bRange = 0;
+                tRange = 3;
+                break;
+            case 1:
+                bRange = 4;
+                tRange = 7;
+                break;
+            case 2:
+                bRange = 8;
+                tRange = 11;
+                break;
+            case 3:
+                bRange = 12;
+                tRange = 15;
+                break;
+        }
 
-        moneyTiles[0].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p1Thousands}");
-        moneyTiles[1].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p1Hundreds}");
-        moneyTiles[2].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p1Tens}");
-        moneyTiles[3].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p1Ones}");
+        for (int i = bRange; i <= tRange; i++)
+        {
+            digits.Add(moneyTiles[i].GetComponent<SpriteRenderer>());
+        }
 
-        int p2Thousands = p2.money / 1000; // 1500 / 1000 = 1
-        int p2Hundreds = (p2.money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
-        int p2Tens = (p2.money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
-        int p2Ones = p2.money % 10; // 1500 % 10 = 150 with remainder 0 = 0
+        int iters = 60;
+        for (int i = 0; i < iters; i++)
+        {
 
-        moneyTiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p2Thousands}");
-        moneyTiles[5].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p2Hundreds}");
-        moneyTiles[6].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p2Tens}");
-        moneyTiles[7].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p2Ones}");
+            float easer = (float)i/iters;
+            int easedMoney = src + (int)((dest - src) * easer);
+            yield return SetMoney(easedMoney, digits);
+            yield return new WaitForSeconds(0.6f/iters);
+        }
+        yield return SetMoney(dest, digits);
+    }
 
-        int p3Thousands = p3.money / 1000; // 1500 / 1000 = 1
-        int p3Hundreds = (p3.money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
-        int p3Tens = (p3.money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
-        int p3Ones = p3.money % 10; // 1500 % 10 = 150 with remainder 0 = 0
+    private IEnumerator SetMoney(int money, List<SpriteRenderer> moneyDigits)
+    {
+        int pThousands = money / 1000; // 1500 / 1000 = 1
+        int pHundreds = (money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
+        int pTens = (money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
+        int pOnes = money % 10; // 1500 % 10 = 150 with remainder 0 = 0
 
-        moneyTiles[8].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p3Thousands}");
-        moneyTiles[9].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p3Hundreds}");
-        moneyTiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p3Tens}");
-        moneyTiles[11].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p3Ones}");
-
-        int p4Thousands = p4.money / 1000; // 1500 / 1000 = 1
-        int p4Hundreds = (p4.money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
-        int p4Tens = (p4.money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
-        int p4Ones = p4.money % 10; // 1500 % 10 = 150 with remainder 0 = 0
-
-        moneyTiles[12].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p4Thousands}");
-        moneyTiles[13].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p4Hundreds}");
-        moneyTiles[14].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p4Tens}");
-        moneyTiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p4Ones}");
-
-
+        moneyDigits[0].sprite = Resources.Load<Sprite>($"DigitSprites/{pThousands}");
+        moneyDigits[1].sprite = Resources.Load<Sprite>($"DigitSprites/{pHundreds}");
+        moneyDigits[2].sprite = Resources.Load<Sprite>($"DigitSprites/{pTens}");
+        moneyDigits[3].sprite = Resources.Load<Sprite>($"DigitSprites/{pOnes}");
+        yield return null;
     }
 
     private void AutoplaceTiles()
@@ -709,5 +716,26 @@ public class Board : MonoBehaviour
             tile.transform.localScale = new Vector3(boardWidthPx * transform.localScale.x / (tileRect.width * 11) * unitDisplayRatio, boardHeightPx * transform.localScale.y / (tileRect.height * 11) * unitDisplayRatio, 1f);
             tile.transform.position = new Vector3(transform.position.x + xOffset, transform.position.y + yOffset, 0f);
         }
+    }
+}
+
+public class MoneyEvent : Event
+{
+    Player player;
+    Board board;
+    int src;
+    int dest;
+
+    public MoneyEvent(Player p, Board b, int src, int dest)
+    {
+        this.player = p;
+        this.board = b;
+        this.src = src;
+        this.dest = dest;
+    }
+
+    public IEnumerator RunEvent()
+    {
+        yield return board.UpdateMoney(player, src, dest);
     }
 }

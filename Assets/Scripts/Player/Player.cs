@@ -130,9 +130,9 @@ public class Player : MonoBehaviour
 	public void ChangeBalance(int amount)
     {
 		if (!bankrupt)
-        {
+		{
+			GameManager.UpdateVisualBalance(this, money, money + amount);
 			money += amount;
-			// TODO: Call a GameManager function to do a routine visually adding money to player hand
 		}
 	}
 

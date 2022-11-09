@@ -33,4 +33,10 @@ public class EventHandler : MonoBehaviour
         MoveEvent newEvent = new MoveEvent(player, dest);
         yield return StartCoroutine(newEvent.RunEvent());
     }
+
+    public IEnumerator UpdateMoney(Player p, GameObject board, int src, int dest)
+    {
+        MoneyEvent newEvent = new MoneyEvent(p, board.GetComponent<Board>(), src, dest);
+        yield return StartCoroutine(newEvent.RunEvent());
+    }
 }
