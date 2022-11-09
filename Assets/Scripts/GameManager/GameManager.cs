@@ -79,6 +79,7 @@ public static class GameManager
                 GivePlayerProperty(currPlayer, index);
                 Debug.Log($"Bought tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - (boughtTile.PurchasePrice * boughtTile.Level)}"); // TODO: Delete once hands implemented
                 players[currPlayer].GetComponent<Player>().ChangeBalance(-boughtTile.PurchasePrice * boughtTile.Level);
+                board.GetComponent<Board>().updateMoney();
                 break;
             case GameState.BuyUtility:
                 UtilityTile boughtUtility = tiles[index].GetComponent<UtilityTile>();
@@ -86,6 +87,7 @@ public static class GameManager
                 GivePlayerUtility(currPlayer, index);
                 Debug.Log($"Bought utility {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - boughtUtility.PurchasePrice}"); // TODO: Delete once hands implemented
                 players[currPlayer].GetComponent<Player>().ChangeBalance(-boughtUtility.PurchasePrice);
+                board.GetComponent<Board>().updateMoney();
                 break;
             case GameState.UpgradeProperty:
                 PropertyTile upgradedTile = tiles[index].GetComponent<PropertyTile>();
@@ -93,6 +95,7 @@ public static class GameManager
 
                 upgradedTile.Evolve();
                 players[currPlayer].GetComponent<Player>().ChangeBalance(-upgradedTile.PurchasePrice);
+                board.GetComponent<Board>().updateMoney();
                 break;
             case GameState.Railroad:
                 Player player = players[currPlayer].GetComponent<Player>();
@@ -105,6 +108,7 @@ public static class GameManager
 
                 Debug.Log($"Selected railroad tile {index}. Money {players[currPlayer].GetComponent<Player>().money} => {players[currPlayer].GetComponent<Player>().money - price}"); // TODO: Delete once hands implemented
                 player.ChangeBalance(-price);
+                board.GetComponent<Board>().updateMoney();
                 board.GetComponent<Board>().StartCoroutine(handler.MovePlayerNoLand(players[currPlayer], tiles[index]));
                 break;
             case GameState.PokemonCenter:
@@ -192,6 +196,7 @@ public static class GameManager
             }
             player.ChangeBalance(-cost);
             players[tile.Owner].GetComponent<Player>().ChangeBalance(cost);
+            board.GetComponent<Board>().updateMoney();
             Debug.Log($"Player {currPlayer} has ${player.money}, and player {tile.Owner} has ${players[tile.Owner].GetComponent<Player>().money}"); // TODO: Delete once hands implemented
             if (player.money < 0)
             {
@@ -289,6 +294,7 @@ public static class GameManager
     {
         Player player = players[currPlayer].GetComponent<Player>();
         player.ChangeBalance(-tax);
+        board.GetComponent<Board>().updateMoney();
         if (player.money < 0)
         {
             // Player lost to taxes so their pokemon are released back to have no owner
@@ -337,6 +343,7 @@ public static class GameManager
 
             player.ChangeBalance(-cost);
             players[tile.Owner].GetComponent<Player>().ChangeBalance(cost);
+            board.GetComponent<Board>().updateMoney();
             Debug.Log($"Player {currPlayer} has ${player.money}, and player {tile.Owner} has ${players[tile.Owner].GetComponent<Player>().money}"); // TODO: Delete once hands implemented
             if (player.money < 0)
             {
@@ -407,6 +414,7 @@ public static class GameManager
         if (player.position + dist >= 40)
         {
             player.ChangeBalance(200);
+            board.GetComponent<Board>().updateMoney();
         }
         board.GetComponent<Board>().StartCoroutine(handler.MovePlayerTo(players[currPlayer], tiles[(player.position + dist) % 40]));
     }
@@ -503,18 +511,9 @@ public static class GameManager
                     Debug.Log($"Transfered property ${property.index} from player {currPlayer} to {debtedPlayer}");
                 }
             }
-            UtilityTile utility = tile.GetComponent<UtilityTile>();
-            if (utility != null) // If tile is actually a property
-            {
-                if (utility.Owner == currPlayer)
-                {
-                    GivePlayerUtility(debtedPlayer, utility.index);
-                    Debug.Log($"Transfered utilit ${utility.index} from player {currPlayer} to {debtedPlayer}");
-                }
-            }
         }
         players[currPlayer].GetComponent<Player>().HidePlayer();
-
+        // TODO: check if only 1 player is left and finish the game if so
         int numBankrupt = 0;
 
         foreach (GameObject playerObj in players)

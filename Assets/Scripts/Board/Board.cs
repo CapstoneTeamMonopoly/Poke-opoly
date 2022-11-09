@@ -7,6 +7,8 @@ public class Board : MonoBehaviour
     private List<GameObject> tiles;
     private List<GameObject> players;
     private List<GameObject> dice;
+    private List<GameObject> propertyTiles;
+    private List<GameObject> moneyTiles;
     private GameObject communityDeck;
     private GameObject chanceDeck;
     private const int NUM_TILES = 40;
@@ -16,6 +18,10 @@ public class Board : MonoBehaviour
         // Create board tiles
         InstantiateTiles();
         AutoplaceTiles();
+
+        // Create player stats
+        InstantiateProperties();
+        InstantiateMoney();
 
         // Create players
         InstantiatePlayers();
@@ -52,8 +58,8 @@ public class Board : MonoBehaviour
     {
         communityDeck = new GameObject("deck-0", typeof(BoxCollider), typeof(SpriteRenderer), typeof(CommunityDeck));
         chanceDeck = new GameObject("deck-1", typeof(BoxCollider), typeof(SpriteRenderer), typeof(ChanceDeck));
-        communityDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Decks/CommunityChest");
-        chanceDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Decks/Chance");
+        communityDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-communitychest");
+        chanceDeck.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-chance");
         communityDeck.transform.position = new Vector3(-3f, -3f, -1f);
         chanceDeck.transform.position = new Vector3(3f, 3f, -1f);
 
@@ -71,7 +77,7 @@ public class Board : MonoBehaviour
             playerObj.GetComponent<Player>().InstantiatePlayerPosition(tiles[0]);
             players.Add(playerObj);
             // TODO: Read player controlled values from previous scene
-            playerObj.GetComponent<Player>().playerControlled = true;
+            playerObj.GetComponent<Player>().playerControlled = false;
             Debug.Log($"Player {i} controlled by player: {playerObj.GetComponent<Player>().playerControlled}");
         }
     }
@@ -83,7 +89,7 @@ public class Board : MonoBehaviour
         // Go!
         GameObject tileObj0 = new GameObject("tile-0", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
         tiles.Add(tileObj0);
-        tiles[0].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[0].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-go");
         tiles[0].GetComponent<BasicTile>().index = 0;
 
 
@@ -98,7 +104,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj2 = new GameObject("tile-2", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
         tiles.Add(tileObj2);
-        tiles[2].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[2].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-communitychest");
         tiles[2].GetComponent<BasicTile>().index = 2;
 
 
@@ -113,14 +119,14 @@ public class Board : MonoBehaviour
 
         GameObject tileObj4 = new GameObject("tile-4", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
         tiles.Add(tileObj4);
-        tiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile"); // Replace this later
         tiles[4].GetComponent<BasicTile>().index = 4;
         tiles[4].GetComponent<TaxTile>().TaxAmount = 200;
 
 
         GameObject tileObj5 = new GameObject("tile-5", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
         tiles.Add(tileObj5);
-        tiles[5].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[5].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-rr1");
         tiles[5].GetComponent<BasicTile>().index = 5;
 
 
@@ -135,7 +141,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj7 = new GameObject("tile-7", typeof(BoxCollider), typeof(ChanceTile), typeof(SpriteRenderer));
         tiles.Add(tileObj7);
-        tiles[7].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[7].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-chance");
         tiles[7].GetComponent<BasicTile>().index = 7;
 
 
@@ -160,7 +166,7 @@ public class Board : MonoBehaviour
         // Next Corner!
         GameObject tileObj10 = new GameObject("tile-10", typeof(BoxCollider), typeof(PokemonCenterTile), typeof(SpriteRenderer));
         tiles.Add(tileObj10);
-        tiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-pc");
         tiles[10].GetComponent<BasicTile>().index = 10;
 
 
@@ -175,7 +181,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj12 = new GameObject("tile-12", typeof(BoxCollider), typeof(UtilityTile), typeof(SpriteRenderer));
         tiles.Add(tileObj12);
-        tiles[12].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[12].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-util-electric");
         tiles[12].GetComponent<BasicTile>().index = 12;
         tiles[12].GetComponent<UtilityTile>().PurchasePrice = 150;
 
@@ -200,7 +206,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj15 = new GameObject("tile-15", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
         tiles.Add(tileObj15);
-        tiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-rr2");
         tiles[15].GetComponent<BasicTile>().index = 15;
 
 
@@ -215,7 +221,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj17 = new GameObject("tile-17", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
         tiles.Add(tileObj17);
-        tiles[17].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[17].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-communitychest");
         tiles[17].GetComponent<BasicTile>().index = 17;
 
 
@@ -240,7 +246,7 @@ public class Board : MonoBehaviour
         // Next corner!
         GameObject tileObj20 = new GameObject("tile-20", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
         tiles.Add(tileObj20);
-        tiles[20].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[20].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile"); // Change this later
         tiles[20].GetComponent<BasicTile>().index = 20;
 
 
@@ -255,7 +261,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj22 = new GameObject("tile-22", typeof(BoxCollider), typeof(ChanceTile), typeof(SpriteRenderer));
         tiles.Add(tileObj22);
-        tiles[22].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[22].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-chance");
         tiles[22].GetComponent<BasicTile>().index = 22;
 
 
@@ -279,7 +285,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj25 = new GameObject("tile-25", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
         tiles.Add(tileObj25);
-        tiles[25].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[25].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-rr3");
         tiles[25].GetComponent<BasicTile>().index = 25;
 
 
@@ -303,7 +309,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj28 = new GameObject("tile-28", typeof(BoxCollider), typeof(UtilityTile), typeof(SpriteRenderer));
         tiles.Add(tileObj28);
-        tiles[28].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[28].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-util-water");
         tiles[28].GetComponent<BasicTile>().index = 28;
         tiles[28].GetComponent<UtilityTile>().PurchasePrice = 150;
 
@@ -320,7 +326,7 @@ public class Board : MonoBehaviour
         // Last Corner!
         GameObject tileObj30 = new GameObject("tile-30", typeof(BoxCollider), typeof(TeamRocketTile), typeof(SpriteRenderer));
         tiles.Add(tileObj30);
-        tiles[30].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[30].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-teamrocket");
         tiles[30].GetComponent<BasicTile>().index = 30;
 
 
@@ -344,7 +350,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj33 = new GameObject("tile-33", typeof(BoxCollider), typeof(CommunityChestTile), typeof(SpriteRenderer));
         tiles.Add(tileObj33);
-        tiles[33].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[33].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-communitychest");
         tiles[33].GetComponent<BasicTile>().index = 33;
 
 
@@ -359,13 +365,13 @@ public class Board : MonoBehaviour
 
         GameObject tileObj35 = new GameObject("tile-35", typeof(BoxCollider), typeof(RailroadTile), typeof(SpriteRenderer));
         tiles.Add(tileObj35);
-        tiles[35].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[35].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-rr4");
         tiles[35].GetComponent<BasicTile>().index = 35;
 
 
         GameObject tileObj36 = new GameObject("tile-36", typeof(BoxCollider), typeof(ChanceTile), typeof(SpriteRenderer));
         tiles.Add(tileObj36);
-        tiles[36].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[36].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-chance");
         tiles[36].GetComponent<BasicTile>().index = 36;
 
 
@@ -380,7 +386,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj38 = new GameObject("tile-38", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
         tiles.Add(tileObj38);
-        tiles[38].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        tiles[38].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile"); // Change this later
         tiles[38].GetComponent<BasicTile>().index = 38;
         tiles[38].GetComponent<TaxTile>().TaxAmount = 100;
 
@@ -392,6 +398,262 @@ public class Board : MonoBehaviour
         tiles[39].GetComponent<PropertyTile>().BaseLandingPrice = 50;
         tiles[39].GetComponent<PropertyTile>().Type = "Blue";
         tiles[39].GetComponent<PropertyTile>().SetBaseSprite("Board/PokemonTiles/blue2");
+    }
+
+    private void InstantiateMoney()
+    {
+
+        moneyTiles = new List<GameObject>();
+
+        GameObject p0_1 = new GameObject("p0_1", typeof(SpriteRenderer));
+        moneyTiles.Add(p0_1);
+        moneyTiles[0].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/1");
+        moneyTiles[0].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[0].transform.position = new Vector3(-9.4f, -0.6f, 0f);
+
+        GameObject p0_2 = new GameObject("p0_2", typeof(SpriteRenderer));
+        moneyTiles.Add(p0_2);
+        moneyTiles[1].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/5");
+        moneyTiles[1].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[1].transform.position = new Vector3(-9.1f, -0.6f, 0f);
+
+        GameObject p0_3 = new GameObject("p0_3", typeof(SpriteRenderer));
+        moneyTiles.Add(p0_3);
+        moneyTiles[2].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
+        moneyTiles[2].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[2].transform.position = new Vector3(-8.8f, -0.6f, 0f);
+
+        GameObject p0_4 = new GameObject("p0_4", typeof(SpriteRenderer));
+        moneyTiles.Add(p0_4);
+        moneyTiles[3].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
+        moneyTiles[3].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[3].transform.position = new Vector3(-8.5f, -0.6f, 0f);
+
+        GameObject p1_1 = new GameObject("p1_1", typeof(SpriteRenderer));
+        moneyTiles.Add(p1_1);
+        moneyTiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/1");
+        moneyTiles[4].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[4].transform.position = new Vector3(-9.5f, -2.4f, 0f);
+
+        GameObject p1_2 = new GameObject("p1_2", typeof(SpriteRenderer));
+        moneyTiles.Add(p1_2);
+        moneyTiles[5].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/5");
+        moneyTiles[5].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[5].transform.position = new Vector3(-9.2f, -2.4f, 0f);
+
+        GameObject p1_3 = new GameObject("p1_3", typeof(SpriteRenderer));
+        moneyTiles.Add(p1_3);
+        moneyTiles[6].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
+        moneyTiles[6].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[6].transform.position = new Vector3(-8.9f, -2.4f, 0f);
+
+        GameObject p1_4 = new GameObject("p1_4", typeof(SpriteRenderer));
+        moneyTiles.Add(p1_4);
+        moneyTiles[7].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
+        moneyTiles[7].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[7].transform.position = new Vector3(-8.6f, -2.4f, 0f);
+
+        GameObject p2_1 = new GameObject("p2_1", typeof(SpriteRenderer));
+        moneyTiles.Add(p2_1);
+        moneyTiles[8].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/1");
+        moneyTiles[8].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[8].transform.position = new Vector3(-9.5f, -4.1f, 0f);
+
+        GameObject p2_2 = new GameObject("p2_2", typeof(SpriteRenderer));
+        moneyTiles.Add(p2_2);
+        moneyTiles[9].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/5");
+        moneyTiles[9].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[9].transform.position = new Vector3(-9.2f, -4.1f, 0f);
+
+        GameObject p2_3 = new GameObject("p2_3", typeof(SpriteRenderer));
+        moneyTiles.Add(p2_3);
+        moneyTiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
+        moneyTiles[10].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[10].transform.position = new Vector3(-8.9f, -4.1f, 0f);
+
+        GameObject p2_4 = new GameObject("p2_4", typeof(SpriteRenderer));
+        moneyTiles.Add(p2_4);
+        moneyTiles[11].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
+        moneyTiles[11].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[11].transform.position = new Vector3(-8.6f, -4.1f, 0f);
+
+        GameObject p3_1 = new GameObject("p3_1", typeof(SpriteRenderer));
+        moneyTiles.Add(p3_1);
+        moneyTiles[12].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/1");
+        moneyTiles[12].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[12].transform.position = new Vector3(-9.4f, -5.95f, 0f);
+
+        GameObject p3_2 = new GameObject("p3_2", typeof(SpriteRenderer));
+        moneyTiles.Add(p3_2);
+        moneyTiles[13].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/5");
+        moneyTiles[13].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[13].transform.position = new Vector3(-9.1f, -5.95f, 0f);
+
+        GameObject p3_3 = new GameObject("p3_3", typeof(SpriteRenderer));
+        moneyTiles.Add(p3_3);
+        moneyTiles[14].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
+        moneyTiles[14].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[14].transform.position = new Vector3(-8.8f, -5.95f, 0f);
+
+        GameObject p3_4 = new GameObject("p3_4", typeof(SpriteRenderer));
+        moneyTiles.Add(p3_4);
+        moneyTiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
+        moneyTiles[15].transform.localScale = new Vector3(.5f, .5f, 0f);
+        moneyTiles[15].transform.position = new Vector3(-8.5f, -5.95f, 0f);
+
+    }
+
+    private void InstantiateProperties()
+    {
+
+        propertyTiles = new List<GameObject>();
+
+        GameObject p0_1 = new GameObject("p0_1", typeof(SpriteRenderer));
+        propertyTiles.Add(p0_1);
+        propertyTiles[0].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[0].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[0].transform.position = new Vector3(-12.8f, -0.3f, 0f);
+
+        GameObject p0_2 = new GameObject("p0_2", typeof(SpriteRenderer));
+        propertyTiles.Add(p0_2);
+        propertyTiles[1].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[1].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[1].transform.position = new Vector3(-12f, -0.3f, 0f);
+
+        GameObject p0_3 = new GameObject("p0_3", typeof(SpriteRenderer));
+        propertyTiles.Add(p0_3);
+        propertyTiles[2].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[2].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[2].transform.position = new Vector3(-11.2f, -0.3f, 0f);
+
+        GameObject p0_4 = new GameObject("p0_4", typeof(SpriteRenderer));
+        propertyTiles.Add(p0_4);
+        propertyTiles[3].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[3].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[3].transform.position = new Vector3(-10.4f, -0.3f, 0f);
+
+        GameObject p1_1 = new GameObject("p1_1", typeof(SpriteRenderer));
+        propertyTiles.Add(p1_1);
+        propertyTiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[4].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[4].transform.position = new Vector3(-12.8f, -2.1f, 0f);
+
+        GameObject p1_2 = new GameObject("p1_2", typeof(SpriteRenderer));
+        propertyTiles.Add(p1_2);
+        propertyTiles[5].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[5].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[5].transform.position = new Vector3(-12f, -2.1f, 0f);
+
+        GameObject p1_3 = new GameObject("p1_3", typeof(SpriteRenderer));
+        propertyTiles.Add(p1_3);
+        propertyTiles[6].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[6].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[6].transform.position = new Vector3(-11.2f, -2.1f, 0f);
+
+        GameObject p1_4 = new GameObject("p1_4", typeof(SpriteRenderer));
+        propertyTiles.Add(p1_4);
+        propertyTiles[7].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[7].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[7].transform.position = new Vector3(-10.4f, -2.1f, 0f);
+
+        GameObject p2_1 = new GameObject("p2_1", typeof(SpriteRenderer));
+        propertyTiles.Add(p2_1);
+        propertyTiles[8].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[8].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[8].transform.position = new Vector3(-12.8f, -3.75f, 0f);
+
+        GameObject p2_2 = new GameObject("p2_2", typeof(SpriteRenderer));
+        propertyTiles.Add(p2_2);
+        propertyTiles[9].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[9].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[9].transform.position = new Vector3(-12f, -3.75f, 0f);
+
+        GameObject p2_3 = new GameObject("p2_3", typeof(SpriteRenderer));
+        propertyTiles.Add(p2_3);
+        propertyTiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[10].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[10].transform.position = new Vector3(-11.2f, -3.75f, 0f);
+
+        GameObject p2_4 = new GameObject("p2_4", typeof(SpriteRenderer));
+        propertyTiles.Add(p2_4);
+        propertyTiles[11].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[11].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[11].transform.position = new Vector3(-10.4f, -3.75f, 0f);
+
+        GameObject p3_1 = new GameObject("p3_1", typeof(SpriteRenderer));
+        propertyTiles.Add(p3_1);
+        propertyTiles[12].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[12].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[12].transform.position = new Vector3(-12.8f, -5.6f, 0f);
+
+        GameObject p3_2 = new GameObject("p3_2", typeof(SpriteRenderer));
+        propertyTiles.Add(p3_2);
+        propertyTiles[13].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[13].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[13].transform.position = new Vector3(-12f, -5.6f, 0f);
+
+        GameObject p3_3 = new GameObject("p3_3", typeof(SpriteRenderer));
+        propertyTiles.Add(p3_3);
+        propertyTiles[14].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[14].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[14].transform.position = new Vector3(-11.2f, -5.6f, 0f);
+
+        GameObject p3_4 = new GameObject("p3_4", typeof(SpriteRenderer));
+        propertyTiles.Add(p3_4);
+        propertyTiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
+        propertyTiles[15].transform.localScale = new Vector3(.5f, .5f, 0f);
+        propertyTiles[15].transform.position = new Vector3(-10.4f, -5.6f, 0f);
+
+    }
+
+    public void updateMoney()
+    {
+        Player p1 = players[0].GetComponent<Player>();
+        Player p2 = players[1].GetComponent<Player>();
+        Player p3 = players[2].GetComponent<Player>();
+        Player p4 = players[3].GetComponent<Player>();
+    
+        int p1Thousands = p1.money / 1000; // 1500 / 1000 = 1
+        int p1Hundreds = (p1.money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
+        int p1Tens = (p1.money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
+        int p1Ones = p1.money % 10; // 1500 % 10 = 150 with remainder 0 = 0
+
+        moneyTiles[0].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p1Thousands}");
+        moneyTiles[1].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p1Hundreds}");
+        moneyTiles[2].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p1Tens}");
+        moneyTiles[3].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p1Ones}");
+
+        int p2Thousands = p2.money / 1000; // 1500 / 1000 = 1
+        int p2Hundreds = (p2.money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
+        int p2Tens = (p2.money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
+        int p2Ones = p2.money % 10; // 1500 % 10 = 150 with remainder 0 = 0
+
+        moneyTiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p2Thousands}");
+        moneyTiles[5].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p2Hundreds}");
+        moneyTiles[6].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p2Tens}");
+        moneyTiles[7].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p2Ones}");
+
+        int p3Thousands = p3.money / 1000; // 1500 / 1000 = 1
+        int p3Hundreds = (p3.money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
+        int p3Tens = (p3.money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
+        int p3Ones = p3.money % 10; // 1500 % 10 = 150 with remainder 0 = 0
+
+        moneyTiles[8].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p3Thousands}");
+        moneyTiles[9].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p3Hundreds}");
+        moneyTiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p3Tens}");
+        moneyTiles[11].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p3Ones}");
+
+        int p4Thousands = p4.money / 1000; // 1500 / 1000 = 1
+        int p4Hundreds = (p4.money / 100) % 10; // 1500 / 100 = 15 % 10 = 5
+        int p4Tens = (p4.money / 10) % 10; // 1500 / 10 = 150 % 10 = 0 
+        int p4Ones = p4.money % 10; // 1500 % 10 = 150 with remainder 0 = 0
+
+        moneyTiles[12].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p4Thousands}");
+        moneyTiles[13].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p4Hundreds}");
+        moneyTiles[14].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p4Tens}");
+        moneyTiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"DigitSprites/{p4Ones}");
+
+
     }
 
     private void AutoplaceTiles()
