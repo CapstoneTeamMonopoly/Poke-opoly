@@ -7,7 +7,6 @@ public class Board : MonoBehaviour
     private List<GameObject> tiles;
     private List<GameObject> players;
     private List<GameObject> dice;
-    private List<GameObject> propertyTiles;
     private List<GameObject> moneyTiles;
     private GameObject communityDeck;
     private GameObject chanceDeck;
@@ -20,7 +19,6 @@ public class Board : MonoBehaviour
         AutoplaceTiles();
 
         // Create player stats
-        InstantiateProperties();
         InstantiateMoney();
 
         // Create players
@@ -500,109 +498,6 @@ public class Board : MonoBehaviour
         moneyTiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("DigitSprites/0");
         moneyTiles[15].transform.localScale = new Vector3(.5f, .5f, 0f);
         moneyTiles[15].transform.position = new Vector3(-8.5f, -5.95f, 0f);
-
-    }
-
-    private void InstantiateProperties()
-    {
-
-        propertyTiles = new List<GameObject>();
-
-        GameObject p0_1 = new GameObject("p0_1", typeof(SpriteRenderer));
-        propertyTiles.Add(p0_1);
-        propertyTiles[0].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[0].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[0].transform.position = new Vector3(-12.8f, -0.3f, 0f);
-
-        GameObject p0_2 = new GameObject("p0_2", typeof(SpriteRenderer));
-        propertyTiles.Add(p0_2);
-        propertyTiles[1].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[1].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[1].transform.position = new Vector3(-12f, -0.3f, 0f);
-
-        GameObject p0_3 = new GameObject("p0_3", typeof(SpriteRenderer));
-        propertyTiles.Add(p0_3);
-        propertyTiles[2].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[2].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[2].transform.position = new Vector3(-11.2f, -0.3f, 0f);
-
-        GameObject p0_4 = new GameObject("p0_4", typeof(SpriteRenderer));
-        propertyTiles.Add(p0_4);
-        propertyTiles[3].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[3].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[3].transform.position = new Vector3(-10.4f, -0.3f, 0f);
-
-        GameObject p1_1 = new GameObject("p1_1", typeof(SpriteRenderer));
-        propertyTiles.Add(p1_1);
-        propertyTiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[4].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[4].transform.position = new Vector3(-12.8f, -2.1f, 0f);
-
-        GameObject p1_2 = new GameObject("p1_2", typeof(SpriteRenderer));
-        propertyTiles.Add(p1_2);
-        propertyTiles[5].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[5].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[5].transform.position = new Vector3(-12f, -2.1f, 0f);
-
-        GameObject p1_3 = new GameObject("p1_3", typeof(SpriteRenderer));
-        propertyTiles.Add(p1_3);
-        propertyTiles[6].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[6].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[6].transform.position = new Vector3(-11.2f, -2.1f, 0f);
-
-        GameObject p1_4 = new GameObject("p1_4", typeof(SpriteRenderer));
-        propertyTiles.Add(p1_4);
-        propertyTiles[7].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[7].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[7].transform.position = new Vector3(-10.4f, -2.1f, 0f);
-
-        GameObject p2_1 = new GameObject("p2_1", typeof(SpriteRenderer));
-        propertyTiles.Add(p2_1);
-        propertyTiles[8].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[8].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[8].transform.position = new Vector3(-12.8f, -3.75f, 0f);
-
-        GameObject p2_2 = new GameObject("p2_2", typeof(SpriteRenderer));
-        propertyTiles.Add(p2_2);
-        propertyTiles[9].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[9].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[9].transform.position = new Vector3(-12f, -3.75f, 0f);
-
-        GameObject p2_3 = new GameObject("p2_3", typeof(SpriteRenderer));
-        propertyTiles.Add(p2_3);
-        propertyTiles[10].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[10].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[10].transform.position = new Vector3(-11.2f, -3.75f, 0f);
-
-        GameObject p2_4 = new GameObject("p2_4", typeof(SpriteRenderer));
-        propertyTiles.Add(p2_4);
-        propertyTiles[11].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[11].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[11].transform.position = new Vector3(-10.4f, -3.75f, 0f);
-
-        GameObject p3_1 = new GameObject("p3_1", typeof(SpriteRenderer));
-        propertyTiles.Add(p3_1);
-        propertyTiles[12].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[12].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[12].transform.position = new Vector3(-12.8f, -5.6f, 0f);
-
-        GameObject p3_2 = new GameObject("p3_2", typeof(SpriteRenderer));
-        propertyTiles.Add(p3_2);
-        propertyTiles[13].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[13].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[13].transform.position = new Vector3(-12f, -5.6f, 0f);
-
-        GameObject p3_3 = new GameObject("p3_3", typeof(SpriteRenderer));
-        propertyTiles.Add(p3_3);
-        propertyTiles[14].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[14].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[14].transform.position = new Vector3(-11.2f, -5.6f, 0f);
-
-        GameObject p3_4 = new GameObject("p3_4", typeof(SpriteRenderer));
-        propertyTiles.Add(p3_4);
-        propertyTiles[15].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile");
-        propertyTiles[15].transform.localScale = new Vector3(.5f, .5f, 0f);
-        propertyTiles[15].transform.position = new Vector3(-10.4f, -5.6f, 0f);
 
     }
 
