@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneController : MonoBehaviour
+public class SceneController1 : MonoBehaviour
 {
     public static int playersInGame;
 
     public void MoveToScene(int id)
     {
-        playersInGame = 1;
+        playersInGame = 2;
         SceneManager.LoadScene(id);
     }
 

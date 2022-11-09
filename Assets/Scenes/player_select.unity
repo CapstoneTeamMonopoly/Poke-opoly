@@ -292,7 +292,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 442699707}
-        m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
+        m_TargetAssemblyTypeName: SceneController3, Assembly-CSharp
         m_MethodName: MoveToScene
         m_Mode: 3
         m_Arguments:
@@ -350,7 +350,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 442699702}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f27a84372c84c54d8dac5c7c7339a5a, type: 3}
+  m_Script: {fileID: 11500000, guid: 29f721685eeebb848b563cb5926f453f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &772349904
@@ -522,7 +522,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 830812775}
-        m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
+        m_TargetAssemblyTypeName: SceneController1, Assembly-CSharp
         m_MethodName: MoveToScene
         m_Mode: 3
         m_Arguments:
@@ -580,7 +580,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 830812770}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f27a84372c84c54d8dac5c7c7339a5a, type: 3}
+  m_Script: {fileID: 11500000, guid: 61ba015b1d0a40c4090542940a2a95e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &994813304
@@ -894,6 +894,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1459827023}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: set_layer
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1459827028}
         m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
         m_MethodName: MoveToScene
@@ -1041,7 +1053,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2075058496}
-        m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
+        m_TargetAssemblyTypeName: SceneController2, Assembly-CSharp
         m_MethodName: MoveToScene
         m_Mode: 3
         m_Arguments:
@@ -1099,6 +1111,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2075058491}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f27a84372c84c54d8dac5c7c7339a5a, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a1bda7e7100b8b47872737abe5321b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

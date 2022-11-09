@@ -74,10 +74,122 @@ public class Board : MonoBehaviour
             playerObj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>($"Board/player_{i}");
             playerObj.GetComponent<Player>().InstantiatePlayerPosition(tiles[0]);
             players.Add(playerObj);
-            // TODO: Read player controlled values from previous scene
-            playerObj.GetComponent<Player>().playerControlled = false;
-            Debug.Log($"Player {i} controlled by player: {playerObj.GetComponent<Player>().playerControlled}");
         }
+            // TODO: Read player controlled values from previous scene
+
+        switch (SceneController.playersInGame)
+        {
+            case 1:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = false;
+                players[2].GetComponent<Player>().playerControlled = false;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 2:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = false;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 3:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = true;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 4:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = true;
+                players[3].GetComponent<Player>().playerControlled = true;
+                break;
+        }
+        switch (SceneController1.playersInGame)
+        {
+            case 1:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = false;
+                players[2].GetComponent<Player>().playerControlled = false;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 2:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = false;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 3:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = true;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 4:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = true;
+                players[3].GetComponent<Player>().playerControlled = true;
+                break;
+        }
+
+        switch (SceneController2.playersInGame)
+        {
+            case 1:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = false;
+                players[2].GetComponent<Player>().playerControlled = false;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 2:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = false;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 3:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = true;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 4:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = true;
+                players[3].GetComponent<Player>().playerControlled = true;
+                break;
+        }
+
+        switch (SceneController3.playersInGame)
+        {
+            case 1:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = false;
+                players[2].GetComponent<Player>().playerControlled = false;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 2:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = false;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 3:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = true;
+                players[3].GetComponent<Player>().playerControlled = false;
+                break;
+            case 4:
+                players[0].GetComponent<Player>().playerControlled = true;
+                players[1].GetComponent<Player>().playerControlled = true;
+                players[2].GetComponent<Player>().playerControlled = true;
+                players[3].GetComponent<Player>().playerControlled = true;
+                break;
+        }
+
+
+
     }
 
     private void InstantiateTiles()
