@@ -229,7 +229,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj4 = new GameObject("tile-4", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
         tiles.Add(tileObj4);
-        tiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile"); // Replace this later
+        tiles[4].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-tax");
         tiles[4].GetComponent<BasicTile>().index = 4;
         tiles[4].GetComponent<TaxTile>().TaxAmount = 200;
 
@@ -356,7 +356,7 @@ public class Board : MonoBehaviour
         // Next corner!
         GameObject tileObj20 = new GameObject("tile-20", typeof(BoxCollider), typeof(BasicTile), typeof(SpriteRenderer));
         tiles.Add(tileObj20);
-        tiles[20].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile"); // Change this later
+        tiles[20].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-blank");
         tiles[20].GetComponent<BasicTile>().index = 20;
 
 
@@ -496,7 +496,7 @@ public class Board : MonoBehaviour
 
         GameObject tileObj38 = new GameObject("tile-38", typeof(BoxCollider), typeof(TaxTile), typeof(SpriteRenderer));
         tiles.Add(tileObj38);
-        tiles[38].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/base tile"); // Change this later
+        tiles[38].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Board/PokemonTiles/tile-tax");
         tiles[38].GetComponent<BasicTile>().index = 38;
         tiles[38].GetComponent<TaxTile>().TaxAmount = 100;
 
